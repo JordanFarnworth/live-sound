@@ -34,7 +34,7 @@ gem 'omniauth-facebook', '1.4.0'
 gem 'redis', '~> 3.0'
 
 group :development, :test do
-  gem 'byebug'
+  gem 'byebug', platform: :mri
   gem 'bullet'
   gem 'web-console', '~> 2.0'
   gem 'listen', '~> 3.0.5'
@@ -48,11 +48,6 @@ group :development, :test do
   gem 'database_cleaner'
   gem 'forgery'
   gem 'git_stats'
-end
-
-group :development, :test do
-  # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug', platform: :mri
 end
 
 group :production do
