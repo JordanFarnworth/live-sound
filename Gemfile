@@ -5,7 +5,7 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem "paperclip", "~> 5.0.0"
 gem 'react-rails', :github => 'reactjs/react-rails', :branch => 'master'
-gem 'rails', '~> 5.0.0.beta1'
+gem 'rails', '~> 5.0.0'
 gem 'pg'
 gem 'sass-rails', '~> 5.0'
 gem 'uglifier', '>= 1.3.0'
