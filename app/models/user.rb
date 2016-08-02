@@ -3,7 +3,7 @@ class User < ApplicationRecord
 
   acts_as_paranoid
   has_secure_password
-  validates_uniqueness_of :uid
+  validates_uniqueness_of :uid, allow_nil: true
   validates_inclusion_of :state, in: %w(pending_approval active)
   validates_format_of :email, with: PatternHelper::EMAIL_PATTERN, unless: :email_blank?
 

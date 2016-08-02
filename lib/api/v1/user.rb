@@ -3,7 +3,7 @@ module Api::V1::User
   include Api::V1::Event
   include Api::V1::EventApplication
   include Api::V1::EventInvitation
-  include Api::V1::Band
+  #include Api::V1::Band
   include Api::V1::Entities
   include Api::V1::Review
   include Api::V1::Notification

@@ -10,7 +10,8 @@ module Api::V1::EventApplication
     end
   end
 
-  def event_applications_json(event_application, includes = [])
-    event_application.map { |e| event_application_json e, includes }
+  def event_applications_json(event_applications, includes = [])
+    event_applications = event_applications.includes(:event) if includes.include?('with_events')
+    event_applications.map { |e| event_application_json e, includes }
   end
 end

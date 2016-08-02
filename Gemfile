@@ -17,7 +17,7 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'bcrypt', '~> 3.1.7'
 gem 'geokit-rails'
 gem 'clockwork', git: 'https://github.com/tomykaira/clockwork.git'
-gem 'cancan'
+gem 'cancancan'
 gem 'bootstrap_form'
 gem 'daemons'
 gem 'delayed_job_active_record'
