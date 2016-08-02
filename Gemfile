@@ -25,7 +25,7 @@ gem 'bootstrap-sass', '>= 3.2.0'
 gem 'autoprefixer-rails'
 gem 'will_paginate-bootstrap'
 gem 'font-awesome-rails'
-gem 'paranoia'
+gem "paranoia", github: "rubysherpas/paranoia", branch: "rails5"
 gem 'unicorn'
 gem 'aws-sdk', '< 2.0'
 gem "sentry-raven"

@@ -8,8 +8,27 @@ Bundler.require(*Rails.groups)
 
 module LiveSound
   class Application < Rails::Application
-    # Settings in config/environments/* take precedence over those specified here.
-    # Application configuration should go into files in config/initializers
-    # -- all .rb files in that directory are automatically loaded.
+    config.active_record.raise_in_transactional_callbacks = true
+    config.assets.paths << Rails.root.join("public")
+    config.autoload_paths += [config.root.join('lib').to_s]
+
+    unless Rails.env.test?
+      config.before_initialize do
+        if ENV['AWS_BUCKET']
+          config.paperclip_defaults = {
+            :storage => :s3,
+            :s3_credentials => {
+              :bucket => ENV['AWS_BUCKET'],
+              :access_key_id => ENV['AWS_ACCESS_KEY_ID'],
+              :secret_access_key => ENV['AWS_SECRET_ACCESS_KEY']
+            },
+            :url =>'compworks.s3.amazonaws.com',
+            :path => '/:class/:attachment/:id_partition/:style/:filename',
+            :s3_host_name => 's3-us-west-2.amazonaws.com'
+          }
+        end
+      end
+    end
+
   end
 end

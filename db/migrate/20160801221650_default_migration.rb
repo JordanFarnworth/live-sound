@@ -90,6 +90,11 @@ class DefaultMigration < ActiveRecord::Migration[5.0]
       t.boolean :single_user
       t.datetime :deleted_at
       t.string :address
+      t.string :uid
+      t.string :provider
+      t.string :oauth_token
+      t.datetime :oauth_expires_at
+      t.string :facebook_image_url
       t.float :longitude
       t.float :latitude
 

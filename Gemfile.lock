@@ -12,6 +12,14 @@ GIT
       tilt
 
 GIT
+  remote: git://github.com/rubysherpas/paranoia.git
+  revision: 70f6e37b7b32cf4f70c5b852a38597699f476c62
+  branch: rails5
+  specs:
+    paranoia (2.2.0.pre)
+      activerecord (>= 4.0, < 5.1)
+
+GIT
   remote: https://github.com/tomykaira/clockwork.git
   revision: f4da7d2552af8909481288fef2e04818d3ff01e9
   specs:
@@ -192,8 +200,6 @@ GEM
       cocaine (~> 0.5.5)
       mime-types
       mimemagic (~> 0.3.0)
-    paranoia (1.2.0)
-      activerecord (>= 3.0.0)
     pg (0.18.4)
     pkg-config (1.1.7)
     pry (0.10.4)
@@ -342,7 +348,7 @@ DEPENDENCIES
   omniauth
   omniauth-facebook (= 1.4.0)
   paperclip (~> 5.0.0)
-  paranoia
+  paranoia!
   pg
   pry-rails
   rails (~> 5.0.0)
