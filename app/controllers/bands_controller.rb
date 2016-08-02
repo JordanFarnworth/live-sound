@@ -1,8 +1,8 @@
 class BandsController < ApplicationController
+  load_resource only: :index
   include Api::V1::Band
 
   before_action :find_band, only: [:show, :edit, :delete, :update]
-  before_action :find_active_bands, only: :index
 
   def index
     respond_to do |format|
@@ -39,10 +39,6 @@ class BandsController < ApplicationController
   end
 
   private
-  def find_active_bands
-    @bands = Band.active
-  end
-
   def find_band
     @band = Band.find params[:id] || params[:band_id]
   end

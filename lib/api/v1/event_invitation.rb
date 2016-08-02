@@ -11,6 +11,7 @@ module Api::V1::EventInvitation
   end
 
   def event_invitations_json(event_invitations, includes = [])
+    event_invitations = event_invitations.includes(:event) if includes.include?('with_events')
     event_invitations.map { |e| event_invitation_json e, includes }
   end
 end

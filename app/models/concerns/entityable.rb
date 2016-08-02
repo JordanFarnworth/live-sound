@@ -17,6 +17,7 @@ module Entityable
     has_many :notifications, as: :notifiable
 
     scope :active, -> { where(state: :active) }
+    scope :with_user_as_member, -> (user_id) { where("EXISTS (SELECT 1 FROM entity_users eu WHERE eu.userable_type = '#{name}' AND eu.userable_id = #{quoted_table_name}.#{quoted_primary_key} AND eu.user_id = #{user_id} LIMIT 1)") }
 
     def class_type
       self.class.to_s

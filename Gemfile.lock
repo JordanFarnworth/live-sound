@@ -90,7 +90,7 @@ GEM
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.10.0)
     byebug (9.0.5)
-    cancan (1.6.10)
+    cancancan (1.13.1)
     capybara (2.7.1)
       addressable
       mime-types (>= 1.16)
@@ -351,7 +351,7 @@ DEPENDENCIES
   bootstrap_form
   bullet
   byebug
-  cancan
+  cancancan
   capybara
   clockwork!
   coffee-rails (~> 4.2.1)
