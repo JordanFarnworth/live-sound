@@ -17,7 +17,7 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'bcrypt', '~> 3.1.7'
 gem 'geokit-rails'
 gem 'clockwork', git: 'https://github.com/tomykaira/clockwork.git'
-gem 'cancancan'
+gem 'cancancan', github: 'CanCanCommunity/cancancan', ref: 'c58398c352ed88ac5036e583b91f67472f5d4abf'
 gem 'bootstrap_form'
 gem 'daemons'
 gem 'delayed_job_active_record'
@@ -44,7 +44,6 @@ group :development, :test do
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'rspec-rails', '~> 3.5'
-  gem 'database_cleaner'
   gem 'forgery'
   gem 'git_stats'
 end

@@ -7,7 +7,7 @@ class PrivatePartiesController < ApplicationController
   def index
     respond_to do |format|
       format.json do
-        render json: private_parties_json(@private_parties, get_includes), status: :ok
+        render json: paginated_json(@private_parties) { |pp| private_parties_json(pp, get_includes) }, status: :ok
       end
       format.html do
         @private_parties

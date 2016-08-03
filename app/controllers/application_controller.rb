@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::Base
+  include Pagination
   protect_from_forgery with: :exception
 
   def get_includes

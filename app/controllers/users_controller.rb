@@ -7,7 +7,7 @@ class UsersController < ApplicationController
   def index
     respond_to do |format|
       format.json do
-        render json: users_json(@users, get_includes), status: :ok
+        render json: paginated_json(@users) { |users| users_json(users, get_includes) }, status: :ok
       end
       format.html do
         @users
