@@ -1,13 +1,14 @@
 class BandsController < ApplicationController
-  load_resource only: :index
   include Api::V1::Band
+
+  load_resource only: :index
 
   before_action :find_band, only: [:show, :edit, :delete, :update]
 
   def index
     respond_to do |format|
       format.json do
-        render json: bands_json(@bands, get_includes), status: :ok
+        render json: paginated_json(@bands) { |bands| bands_json(bands, get_includes) }, status: :ok
       end
       format.html do
         @bands

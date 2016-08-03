@@ -7,7 +7,7 @@ class EnterprisesController < ApplicationController
   def index
     respond_to do |format|
       format.json do
-        render json: enterprises_json(@enterprises, get_includes), status: :ok
+        render json: paginated_json(@enterprises) { |e| enterprises_json(e, get_includes) }, status: :ok
       end
       format.html do
         @enterprises
