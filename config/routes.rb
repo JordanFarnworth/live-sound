@@ -14,7 +14,6 @@ Rails.application.routes.draw do
       resources :enterprises
       resources :private_parties
       resources :events
-      resources :users
     end
   end
 
