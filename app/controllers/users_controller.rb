@@ -1,8 +1,8 @@
 class UsersController < ApplicationController
   include Api::V1::User
 
-  before_action :find_active_users, only: [:index]
-  before_action :find_user, only: [:show, :update]
+  before_action :find_users, only: :index
+  before_action :find_user, only: [:show, :update, :destroy]
 
   def index
     respond_to do |format|
@@ -28,19 +28,40 @@ class UsersController < ApplicationController
 
   def update
     @user.update user_params
-    @user.bypass_password_save!
       respond_to do |format|
-        if @user.only_password_error?
-          format.json { render json: user_json(@user, []), status: :ok  }
+        if @user.save
+          format.json { render json: user_json(@user), status: :ok  }
         else
           format.json { render json: {error: "#{@user.errors.full_messages}", status: :bad_request}}
         end
       end
   end
 
+  def create
+    @user = User.new user_params
+    respond_to do |format|
+      if @user.save
+        format.json { render json: user_json(@user), status: :ok }
+      else
+        format.json { render json: {errors: "#{@user.errors.full_messages}"}, status: :bad_request }
+      end
+    end
+  end
+
+  def destroy
+    @user.destroy
+    respond_to do |format|
+      unless @band.deleted_at == nil
+        format.json { render json: band_json(@band), status: :ok }
+      else
+        format.json { render json: {errors: "#{@band.errors.full_messages}"}, status: :bad_request }
+      end
+    end
+  end
+
   private
-  def find_active_users
-    @users = User.active
+  def find_users
+    @users = User.all
   end
 
   def find_user
