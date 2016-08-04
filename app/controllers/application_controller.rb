@@ -15,6 +15,10 @@ class ApplicationController < ActionController::Base
     @current_user ||= User.find(session[:user_id]) if session[:user_id]
   end
 
+  def current_or_blank_user
+    current_user || User.new(id: -1)
+  end
+
   def current_ability
     @current_ability ||= Ability.new(current_user)
   end
