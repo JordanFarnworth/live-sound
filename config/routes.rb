@@ -2,6 +2,9 @@ Rails.application.routes.draw do
 
   scope :api, defaults: { format: :json }, constraints: { format: :json } do
     scope :v1 do
+      concern :entity_context do
+        resources :events
+      end
       post 'login' => 'sessions#verify'
       get 'current_user' => 'sessions#logged_in_user'
       get 'current_entities' => 'sessions#current_entities'
@@ -10,7 +13,7 @@ Rails.application.routes.draw do
           post 'update' => 'users#update'
         end
       end
-      resources :bands
+      resources :bands, concerns: [:entity_context]
       resources :enterprises
       resources :private_parties
       resources :events

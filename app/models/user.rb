@@ -9,6 +9,8 @@ class User < ApplicationRecord
 
   scope :pending, -> { where(state: :pending_approval) }
 
+  after_create :create_default_entity_user
+
   serialize :settings, Hash
 
   def entities
@@ -29,6 +31,10 @@ class User < ApplicationRecord
   def only_password_error?
     errors = self.errors.full_messages
     errors.first == "Password can't be blank" && errors.length == 1
+  end
+
+  def create_default_entity_user
+    EntityUser.find_or_create_by(user_id: self.id, userable: self)
   end
 
   def self.from_omniauth(auth)

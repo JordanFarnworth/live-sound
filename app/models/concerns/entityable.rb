@@ -15,6 +15,7 @@ module Entityable
     has_many :events_invited_to, through: :event_invitations, as: :invitable, source: "event"
     has_many :favorites, as: :favoriterable
     has_many :notifications, as: :notifiable
+    has_many :event_memberships_as_owner_or_performer, -> { as_owner_or_performer }, as: :memberable, source: 'event_member', class_name: 'EventMember'
 
     scope :active, -> { where(state: :active) }
     scope :with_user_as_member, -> (user_id) { where("EXISTS (SELECT 1 FROM entity_users eu WHERE eu.userable_type = '#{name}' AND eu.userable_id = #{quoted_table_name}.#{quoted_primary_key} AND eu.user_id = #{user_id} LIMIT 1)") }
