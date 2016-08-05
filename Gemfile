@@ -32,6 +32,8 @@ gem "sentry-raven"
 gem 'omniauth'
 gem 'omniauth-facebook', '1.4.0'
 gem 'redis', '~> 3.0'
+gem 'responders'
+gem 'jwt', '~> 1.5.4'
 
 group :development, :test do
   gem 'byebug', platform: :mri
