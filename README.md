@@ -1,3 +1,15 @@
+# Live Sound
+
+## Creating an access token via console
+* Create a user for yourself if one does not already exist
+
+```ruby
+user = User.find 123 # substitute ID for whichever user the token will belong to
+include JwtHelper
+
+token = create_jwt_session({ user_id: user.id }) # `token` will be an access token that can be used in requests
+```
+
 # USER STORIES
 
 entity == band, user, enterprise, private_party
