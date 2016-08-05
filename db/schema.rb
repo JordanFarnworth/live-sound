@@ -10,20 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160801221650) do
+ActiveRecord::Schema.define(version: 20160804170908) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "api_keys", force: :cascade do |t|
-    t.integer  "user_id"
-    t.string   "key"
-    t.string   "key_hint"
-    t.datetime "expires_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_api_keys_on_user_id", using: :btree
-  end
 
   create_table "bands", force: :cascade do |t|
     t.string   "name"
@@ -140,6 +130,15 @@ ActiveRecord::Schema.define(version: 20160801221650) do
     t.index ["favoriterable_type", "favoriterable_id"], name: "index_favorites_on_favoriterable_type_and_favoriterable_id", using: :btree
   end
 
+  create_table "jwt_sessions", force: :cascade do |t|
+    t.integer  "user_id"
+    t.string   "jwt_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["jwt_id"], name: "index_jwt_sessions_on_jwt_id", using: :btree
+    t.index ["user_id"], name: "index_jwt_sessions_on_user_id", using: :btree
+  end
+
   create_table "notifications", force: :cascade do |t|
     t.string   "notifiable_type"
     t.integer  "notifiable_id"
@@ -208,9 +207,9 @@ ActiveRecord::Schema.define(version: 20160801221650) do
     t.datetime "updated_at",         null: false
   end
 
-  add_foreign_key "api_keys", "users"
   add_foreign_key "entity_users", "users"
   add_foreign_key "event_applications", "events"
   add_foreign_key "event_invitations", "events"
   add_foreign_key "event_members", "events"
+  add_foreign_key "jwt_sessions", "users"
 end
