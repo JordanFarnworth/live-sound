@@ -11,5 +11,13 @@ module EntityContext
         @context = clazz.accessible_by(current_ability).find params["#{class_name.singularize}_id"]
       end
     end
+
+    def current_ability
+      if @context
+        @current_context_ability ||= Ability.new(current_user, @context)
+      else
+        super
+      end
+    end
   end
 end

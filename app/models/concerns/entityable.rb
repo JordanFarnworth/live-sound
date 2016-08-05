@@ -79,5 +79,9 @@ module Entityable
       memberships.map(&:event)
     end
 
+    def entity_user_for_user(user)
+      entity_users.find_by(user_id: user)
+    end
+
   end
 end

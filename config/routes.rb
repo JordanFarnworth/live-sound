@@ -3,13 +3,13 @@ Rails.application.routes.draw do
   scope :api, defaults: { format: :json }, constraints: { format: :json } do
     scope :v1 do
       concern :entity_context do
-        resources :events
         resources :event_applications
         resources :event_invitations
         resources :favorites
         resources :notifications
         resources :reviews
         resources :entity_users
+        resources :events, only: [:index, :show, :create, :update, :destroy], shallow: true
       end
       post 'login' => 'sessions#verify'
       get 'current_user' => 'sessions#logged_in_user'
@@ -22,7 +22,7 @@ Rails.application.routes.draw do
       resources :bands, concerns: [:entity_context]
       resources :enterprises, concerns: [:entity_context]
       resources :private_parties, concerns: [:entity_context]
-      resources :events
+      resources :events, only: [:index]
     end
   end
 

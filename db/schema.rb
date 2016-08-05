@@ -86,6 +86,7 @@ ActiveRecord::Schema.define(version: 20160806180414) do
     t.datetime "updated_at",      null: false
     t.string   "invitation_type"
     t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_event_invitations_on_deleted_at", using: :btree
     t.index ["event_id"], name: "index_event_invitations_on_event_id", using: :btree
     t.index ["invitable_type", "invitable_id"], name: "index_event_invitations_on_invitable_type_and_invitable_id", using: :btree
   end
@@ -98,6 +99,8 @@ ActiveRecord::Schema.define(version: 20160806180414) do
     t.integer  "memberable_id"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_event_members_on_deleted_at", using: :btree
     t.index ["event_id"], name: "index_event_members_on_event_id", using: :btree
     t.index ["memberable_type", "memberable_id"], name: "index_event_members_on_memberable_type_and_memberable_id", using: :btree
   end
@@ -117,6 +120,8 @@ ActiveRecord::Schema.define(version: 20160806180414) do
     t.float    "latitude"
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_events_on_deleted_at", using: :btree
   end
 
   create_table "favorites", force: :cascade do |t|
@@ -124,7 +129,6 @@ ActiveRecord::Schema.define(version: 20160806180414) do
     t.integer  "favoriterable_id"
     t.string   "favoritable_type"
     t.integer  "favoritable_id"
-    t.string   "workflow_state"
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
     t.index ["favoritable_type", "favoritable_id"], name: "index_favorites_on_favoritable_type_and_favoritable_id", using: :btree
