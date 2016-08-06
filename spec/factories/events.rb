@@ -2,7 +2,7 @@ FactoryGirl.define do
   factory :event, class: Event do
     id 1234
     recurrence_pattern "weekly"
-    state "active"
+    state "state"
     price 1
     title "event_title"
     description "event_description"

@@ -12,7 +12,7 @@ FactoryGirl.define do
     email 'user@fake.com'
     phone_number '8015555555'
     settings {}
-    state 'active'
+    state ''
   end
 
   factory :invalid_private_party, class: PrivateParty do

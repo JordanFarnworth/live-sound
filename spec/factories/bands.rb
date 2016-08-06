@@ -12,7 +12,7 @@ FactoryGirl.define do
     email 'user@fake.com'
     genre nil
     phone_number '8015555555'
-    state 'active'
+    state 'utah'
     settings {}
   end
 

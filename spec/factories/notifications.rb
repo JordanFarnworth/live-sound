@@ -6,6 +6,6 @@ FactoryGirl.define do
     contextable_id 12345
     contextable_type 'contextable_type'
     description 'description'
-    state 'active'
+    state ''
   end
 end
