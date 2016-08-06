@@ -7,45 +7,33 @@ class EventInvitationsController < ApplicationController
 
   def index
     @event_invitations = EventInvitation.includes(:event).where(invitable: @context)
-    render json: paginated_json(@event_invitations)
+    render json: paginated_json(@event_invitations) { |event_invitations| event_invitations_json(event_invitations) }
   end
 
   def show
-    respond_to do |format|
-      format.json {render json: event_invitation_json(@event_invitation, get_includes), status: :ok }
-      format.html {@event_invitation}
-    end
+    render json: event_invitation_json(@event_invitation, get_includes), status: :ok
   end
 
   def create
     @event_invitation = EventInvitation.new event_invitation_params
-    respond_to do |format|
-      if @event_invitation.valid?
-        @event_invitation.save
-        format.json {render json: event_invitation_json(@event_invitation, get_includes), status: :ok }
-      else
-        format.json {render json: {error: "#{@event_invitation.errors.full_messages}"}, status: :bad_request }
-      end
+    if @event_invitation.save
+      render json: event_invitation_json(@event_invitation, get_includes), status: :ok
+    else
+      render json: {error: "#{@event_invitation.errors.full_messages}"}, status: :bad_request
     end
   end
 
   def update
-    @event_invitation.update event_invitation_params
-    respond_to do |format|
-      if @event_invitation.valid?
-        @event_invitation.save
-        format.json {render json: event_invitation_json(@event_invitation, get_includes), status: :ok }
-      else
-        format.json {render json: {error: @event_invitation.errors.full_messages.to_s}, status: :bad_request }
-      end
+    if @event_invitation.update event_invitation_params
+      render json: event_invitation_json(@event_invitation, get_includes), status: :ok
+    else
+      render json: {error: @event_invitation.errors.full_messages.to_s}, status: :bad_request
     end
   end
 
   def destroy
     @event_invitation.destroy
-    respond_to do |format|
-      format.json {render json: {deleted: true}, status: :ok }
-    end
+    head :no_content
   end
 
   private

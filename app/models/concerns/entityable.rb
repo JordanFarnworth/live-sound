@@ -1,6 +1,8 @@
 module Entityable
   extend ActiveSupport::Concern
 
+  ENTITYABLE_CLASSES = %w(Band Enterprise PrivateParty User)
+
   included do
 
     # has_attached_file :avatar, styles: { medium: "300x300>", thumb: "100x100>" }, default_url: "/images/:style/missing.png"
@@ -16,6 +18,8 @@ module Entityable
     has_many :favorites, as: :favoriterable
     has_many :notifications, as: :notifiable
     has_many :event_memberships_as_owner_or_performer, -> { as_owner_or_performer }, as: :memberable, source: 'event_member', class_name: 'EventMember'
+
+    Entityable::ENTITYABLE_CLASSES = %w(Band User PrivateParty Enterprise)
 
     scope :active, -> { where(workflow_state: :active) }
     scope :with_user_as_member, -> (user_id) { where("EXISTS (SELECT 1 FROM entity_users eu WHERE eu.userable_type = '#{name}' AND eu.userable_id = #{quoted_table_name}.#{quoted_primary_key} AND eu.user_id = #{user_id} LIMIT 1)") }

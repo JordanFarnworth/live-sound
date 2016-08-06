@@ -7,45 +7,33 @@ class ReviewsController < ApplicationController
 
   def index
     @reviews = Review.includes(:reviewerable).where(reviewable: @context)
-    render json: paginated_json(@reviews)
+    render json: paginated_json(@reviews) { |reviews| reviews_json(reviews) }
   end
 
   def show
-    respond_to do |format|
-      format.json {render json: review_json(@review, get_includes), status: :ok }
-      format.html {@review}
-    end
+    render json: review_json(@review, get_includes), status: :ok
   end
 
   def create
     @review = Review.new review_params
-    respond_to do |format|
-      if @review.valid?
-        @review.save
-        format.json {render json: review_json(@review, get_includes), status: :ok }
-      else
-        format.json {render json: {error: "#{@review.errors.full_messages}"}, status: :bad_request }
-      end
+    if @review.save
+      render json: review_json(@review, get_includes), status: :ok
+    else
+      render json: {error: "#{@review.errors.full_messages}"}, status: :bad_request
     end
   end
 
   def update
-    @review.update review_params
-    respond_to do |format|
-      if @review.valid?
-        @review.save
-        format.json {render json: review_json(@review, get_includes), status: :ok }
-      else
-        format.json {render json: {error: @review.errors.full_messages.to_s}, status: :bad_request }
-      end
+    if @review.update review_params
+      render json: review_json(@review, get_includes), status: :ok
+    else
+      render json: {error: @review.errors.full_messages.to_s}, status: :bad_request
     end
   end
 
   def destroy
     @review.destroy
-    respond_to do |format|
-      format.json {render json: {deleted: true}, status: :ok }
-    end
+    head :no_content
   end
 
   private

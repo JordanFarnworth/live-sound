@@ -7,45 +7,33 @@ class EventApplicationsController < ApplicationController
 
   def index
     @event_applications = EventApplication.includes(:event).where(applicable: @context)
-    render json: paginated_json(@event_applications)
+    render json: paginated_json(@event_applications) { |event_applications| event_applications_json(event_applications) }
   end
 
   def show
-    respond_to do |format|
-      format.json {render json: event_application_json(@event_application, get_includes), status: :ok }
-      format.html {@event_application}
-    end
+    render json: event_application_json(@event_application, get_includes), status: :ok
   end
 
   def create
     @event_application = EventApplication.new event_application_params
-    respond_to do |format|
-      if @event_application.valid?
-        @event_application.save
-        format.json {render json: event_application_json(@event_application, get_includes), status: :ok }
-      else
-        format.json {render json: {error: "#{@event_application.errors.full_messages}"}, status: :bad_request }
-      end
+    if @event_application.save
+      render json: event_application_json(@event_application, get_includes), status: :ok
+    else
+      render json: {error: "#{@event_application.errors.full_messages}"}, status: :bad_request
     end
   end
 
   def update
-    @event_application.update event_application_params
-    respond_to do |format|
-      if @event_application.valid?
-        @event_application.save
-        format.json {render json: event_application_json(@event_application, get_includes), status: :ok }
-      else
-        format.json {render json: {error: @event_application.errors.full_messages.to_s}, status: :bad_request }
-      end
+    if @event_application.update event_application_params
+      render json: event_application_json(@event_application, get_includes), status: :ok
+    else
+      render json: {error: @event_application.errors.full_messages.to_s}, status: :bad_request
     end
   end
 
   def destroy
     @event_application.destroy
-    respond_to do |format|
-      format.json {render json: {deleted: true}, status: :ok }
-    end
+    head :no_content
   end
 
   private

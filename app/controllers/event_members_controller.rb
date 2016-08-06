@@ -7,45 +7,33 @@ class EventMembersController < ApplicationController
 
   def index
     @event_members = EventMember.includes(:event).where(memberable: @context)
-    render json: paginated_json(@event_members)
+    render json: paginated_json(@event_members) { |event_members| event_members_json(event_members) }
   end
 
   def show
-    respond_to do |format|
-      format.json {render json: event_member_json(@event_member, get_includes), status: :ok }
-      format.html {@event_member}
-    end
+    render json: event_member_json(@event_member, get_includes), status: :ok
   end
 
   def create
     @event_member = EventMember.new event_member_params
-    respond_to do |format|
-      if @event_member.valid?
-        @event_member.save
-        format.json {render json: event_member_json(@event_member, get_includes), status: :ok }
-      else
-        format.json {render json: {error: "#{@event_member.errors.full_messages}"}, status: :bad_request }
-      end
+    if @event_member.save
+      render json: event_member_json(@event_member, get_includes), status: :ok
+    else
+      render json: {error: "#{@event_member.errors.full_messages}"}, status: :bad_request
     end
   end
 
   def update
-    @event_member.update event_member_params
-    respond_to do |format|
-      if @event_member.valid?
-        @event_member.save
-        format.json {render json: event_member_json(@event_member, get_includes), status: :ok }
-      else
-        format.json {render json: {error: @event_member.errors.full_messages.to_s}, status: :bad_request }
-      end
+    if @event_member.update event_member_params
+      render json: event_member_json(@event_member, get_includes), status: :ok
+    else
+      render json: {error: @event_member.errors.full_messages.to_s}, status: :bad_request
     end
   end
 
   def destroy
     @event_member.destroy
-    respond_to do |format|
-      format.json {render json: {deleted: true}, status: :ok }
-    end
+    head :no_content
   end
 
   private

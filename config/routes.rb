@@ -23,12 +23,6 @@ Rails.application.routes.draw do
       resources :enterprises, concerns: [:entity_context]
       resources :private_parties, concerns: [:entity_context]
       resources :events
-      resources :event_applications
-      resources :event_invitations
-      resources :favorites
-      resources :notifications
-      resources :reviews
-      resources :entity_users
     end
   end
 

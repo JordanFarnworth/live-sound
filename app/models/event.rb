@@ -7,7 +7,7 @@ class Event < ApplicationRecord
   has_many :event_invitations
   has_many :notifications, as: :contextable
 
-  scope :active, -> { where(state: 'active') }
+  scope :active, -> { where(workflow_state: 'active') }
   scope :with_user_as_member, -> (user_id) {
     where <<-SQL
       events.id IN (

@@ -7,45 +7,33 @@ class FavoritesController < ApplicationController
 
   def index
     @favorites = Favorite.includes(:favoriterable).where(favoriteable: @context)
-    render json: paginated_json(@favorites)
+    render json: paginated_json(@favorites) { |favorites| favorites_json(favorites) }
   end
 
   def show
-    respond_to do |format|
-      format.json {render json: favorite_json(@favorite, get_includes), status: :ok }
-      format.html {@favorite}
-    end
+    render json: favorite_json(@favorite, get_includes), status: :ok
   end
 
   def create
     @favorite = Favorite.new favorite_params
-    respond_to do |format|
-      if @favorite.valid?
-        @favorite.save
-        format.json {render json: favorite_json(@favorite, get_includes), status: :ok }
-      else
-        format.json {render json: {error: "#{@favorite.errors.full_messages}"}, status: :bad_request }
-      end
+    if @favorite.save
+      render json: favorite_json(@favorite, get_includes), status: :ok
+    else
+      render json: {error: "#{@favorite.errors.full_messages}"}, status: :bad_request
     end
   end
 
   def update
-    @favorite.update favorite_params
-    respond_to do |format|
-      if @favorite.valid?
-        @favorite.save
-        format.json {render json: favorite_json(@favorite, get_includes), status: :ok }
-      else
-        format.json {render json: {error: @favorite.errors.full_messages.to_s}, status: :bad_request }
-      end
+    if @favorite.update favorite_params
+      render json: favorite_json(@favorite, get_includes), status: :ok
+    else
+      render json: {error: @favorite.errors.full_messages.to_s}, status: :bad_request
     end
   end
 
   def destroy
     @favorite.destroy
-    respond_to do |format|
-      format.json {render json: {deleted: true}, status: :ok }
-    end
+    head :no_content
   end
 
   private

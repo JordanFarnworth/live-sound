@@ -3,10 +3,9 @@ class EntityUser < ApplicationRecord
   belongs_to :userable, polymorphic: :true
 
   WORKFLOW_STATES = %w(suspended active)
-  USERABLE_TYPES = %w(Band User PrivateParty Enterprise) # for now
 
-  validates :user_id, presence: true
+  validates :user_id, presence: true, uniqueness: { scope: [:userable_id, :userable_type] }
   validates :userable_id, presence: true
-  validates :userable_type, presence: true, inclusion: USERABLE_TYPES
+  validates :userable_type, presence: true, inclusion: Entityable::ENTITYABLE_CLASSES
   validates :workflow_state, presence: true, inclusion: WORKFLOW_STATES
 end

@@ -7,45 +7,33 @@ class NotificationsController < ApplicationController
 
   def index
     @notifications = Notification.includes(:contextable).where(notifiable: @context)
-    render json: paginated_json(@notifications)
+    render json: paginated_json(@notifications) { |notifications| notifications_json(notifications) }
   end
 
   def show
-    respond_to do |format|
-      format.json {render json: notification_json(@notification, get_includes), status: :ok }
-      format.html {@notification}
-    end
+    render json: notification_json(@notification, get_includes), status: :ok
   end
 
   def create
     @notification = Notification.new notification_params
-    respond_to do |format|
-      if @notification.valid?
-        @notification.save
-        format.json {render json: notification_json(@notification, get_includes), status: :ok }
-      else
-        format.json {render json: {error: "#{@notification.errors.full_messages}"}, status: :bad_request }
-      end
+    if @notification.save
+      render json: notification_json(@notification, get_includes), status: :ok
+    else
+      render json: {error: "#{@notification.errors.full_messages}"}, status: :bad_request
     end
   end
 
   def update
-    @notification.update notification_params
-    respond_to do |format|
-      if @notification.valid?
-        @notification.save
-        format.json {render json: notification_json(@notification, get_includes), status: :ok }
-      else
-        format.json {render json: {error: @notification.errors.full_messages.to_s}, status: :bad_request }
-      end
+    if @notification.update notification_params
+      render json: notification_json(@notification, get_includes), status: :ok
+    else
+      render json: {error: @notification.errors.full_messages.to_s}, status: :bad_request
     end
   end
 
   def destroy
     @notification.destroy
-    respond_to do |format|
-      format.json {render json: {deleted: true}, status: :ok }
-    end
+    head :no_content
   end
 
   private
