@@ -4,10 +4,10 @@ class User < ApplicationRecord
   acts_as_paranoid
   has_secure_password
   validates_uniqueness_of :uid, allow_nil: true
-  validates_inclusion_of :state, in: %w(pending_approval active)
+  validates_inclusion_of :workflow_state, in: %w(pending_approval active)
   validates_format_of :email, with: PatternHelper::EMAIL_PATTERN, unless: :email_blank?
 
-  scope :pending, -> { where(state: :pending_approval) }
+  scope :pending, -> { where(workflow_state: :pending_approval) }
 
   after_create :create_default_entity_user
 
@@ -46,7 +46,7 @@ class User < ApplicationRecord
       user.facebook_image_url = auth.image
       user.oauth_token = auth.token
       user.oauth_expires_at = Time.at(auth.oauth_expires_at)
-      user.state = 'active'
+      user.workflow_state = 'active'
       user.save! validate: false
     end
   end
