@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160804170908) do
+ActiveRecord::Schema.define(version: 20160806180414) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,10 +29,10 @@ ActiveRecord::Schema.define(version: 20160804170908) do
     t.string   "email"
     t.string   "genre"
     t.string   "phone_number"
-    t.string   "state"
     t.text     "settings"
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
+    t.string   "workflow_state"
   end
 
   create_table "enterprises", force: :cascade do |t|
@@ -70,8 +70,9 @@ ActiveRecord::Schema.define(version: 20160804170908) do
     t.string   "workflow_state"
     t.string   "applicable_type"
     t.integer  "applicable_id"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+    t.string   "application_type"
     t.index ["applicable_type", "applicable_id"], name: "index_event_applications_on_applicable_type_and_applicable_id", using: :btree
     t.index ["event_id"], name: "index_event_applications_on_event_id", using: :btree
   end
@@ -81,8 +82,10 @@ ActiveRecord::Schema.define(version: 20160804170908) do
     t.string   "workflow_state"
     t.string   "invitable_type"
     t.integer  "invitable_id"
-    t.datetime "created_at",     null: false
-    t.datetime "updated_at",     null: false
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.string   "invitation_type"
+    t.datetime "deleted_at"
     t.index ["event_id"], name: "index_event_invitations_on_event_id", using: :btree
     t.index ["invitable_type", "invitable_id"], name: "index_event_invitations_on_invitable_type_and_invitable_id", using: :btree
   end

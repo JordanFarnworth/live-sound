@@ -17,7 +17,7 @@ module Entityable
     has_many :notifications, as: :notifiable
     has_many :event_memberships_as_owner_or_performer, -> { as_owner_or_performer }, as: :memberable, source: 'event_member', class_name: 'EventMember'
 
-    scope :active, -> { where(state: :active) }
+    scope :active, -> { where(workflow_state: :active) }
     scope :with_user_as_member, -> (user_id) { where("EXISTS (SELECT 1 FROM entity_users eu WHERE eu.userable_type = '#{name}' AND eu.userable_id = #{quoted_table_name}.#{quoted_primary_key} AND eu.user_id = #{user_id} LIMIT 1)") }
 
     def class_type
@@ -57,9 +57,9 @@ module Entityable
       EventInvitation.find_or_create_by!(event_id: event.id, invitable: invitee, state: 'pending', status: status)
     end
 
-    def add_user(u, status= "")
+    def add_user(u, role=nil)
       return if self.class.to_s == "User"
-      EntityUser.find_or_create_by!(user: u, userable: self, state: 'active', status: status)
+      EntityUser.find_or_create_by!(user: u, userable: self, workflow_state: 'active')
     end
 
     def events_as_performer

@@ -4,19 +4,31 @@ Rails.application.routes.draw do
     scope :v1 do
       concern :entity_context do
         resources :events
+        resources :event_applications
+        resources :event_invitations
+        resources :favorites
+        resources :notifications
+        resources :reviews
+        resources :entity_users
       end
       post 'login' => 'sessions#verify'
       get 'current_user' => 'sessions#logged_in_user'
       get 'current_entities' => 'sessions#current_entities'
-      resources :users do
+      resources :users, concerns: [:entity_context] do
         member do
           post 'update' => 'users#update'
         end
       end
       resources :bands, concerns: [:entity_context]
-      resources :enterprises
-      resources :private_parties
+      resources :enterprises, concerns: [:entity_context]
+      resources :private_parties, concerns: [:entity_context]
       resources :events
+      resources :event_applications
+      resources :event_invitations
+      resources :favorites
+      resources :notifications
+      resources :reviews
+      resources :entity_users
     end
   end
 
