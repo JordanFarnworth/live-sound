@@ -51,17 +51,17 @@ module Entityable
     end
 
     def apply_to_event(event, status)
-      EventApplication.find_or_create_by!(applicable: self, event_id: event.id, state: 'pending', status: status)
+      EventApplication.find_or_create_by!(applicable: self, event_id: event.id, status: status)
     end
 
     def invite_to_event(event, invitee, status)
       #TODO only make this possible if band is the owner of the event
-      EventInvitation.find_or_create_by!(event_id: event.id, invitable: invitee, state: 'pending', status: status)
+      EventInvitation.find_or_create_by!(event_id: event.id, invitable: invitee, status: status)
     end
 
-    def add_user(u, role=nil)
+    def add_user(user)
       return if self.class.to_s == "User"
-      EntityUser.find_or_create_by!(user: u, userable: self, workflow_state: 'active')
+      EntityUser.find_or_create_by!(user: user, userable: self)
     end
 
     def events_as_performer
@@ -77,6 +77,10 @@ module Entityable
     def events_as_attendee
       memberships = event_members.where(member_type: 'attendee').includes(:event)
       memberships.map(&:event)
+    end
+
+    def entity_user_for_user(user)
+      entity_users.find_by(user_id: user)
     end
 
   end

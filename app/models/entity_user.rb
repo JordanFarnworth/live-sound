@@ -8,4 +8,10 @@ class EntityUser < ApplicationRecord
   validates :userable_id, presence: true
   validates :userable_type, presence: true, inclusion: Entityable::ENTITYABLE_CLASSES
   validates :workflow_state, presence: true, inclusion: WORKFLOW_STATES
+
+  before_validation :infer_values
+
+  def infer_values
+    self.workflow_state ||= 'active'
+  end
 end
