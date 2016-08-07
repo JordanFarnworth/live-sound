@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
   end
 
   def get_includes
-    @includes ||= (params[:includes] || [])
+    @includes ||= (params[:include] || [])
   end
 
   def current_user

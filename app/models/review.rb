@@ -10,6 +10,15 @@ class Review < ApplicationRecord
   validates :reviewable_type, presence: true, inclusion: Entityable::ENTITYABLE_CLASSES
   validates :reviewerable_id, presence: true
   validates :reviewerable_type, presence: true, inclusion: Entityable::ENTITYABLE_CLASSES
+  validates :reviewerable, presence: true
+  validates :reviewable, presence: true
   validates :workflow_state, presence: true, inclusion: WORKFLOW_STATES
 
+  scope :active, -> { where(workflow_state: 'active') }
+
+  before_validation :infer_values
+
+  def infer_values
+    self.workflow_state ||= 'active'
+  end
 end

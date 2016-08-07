@@ -18,20 +18,14 @@ module Entityable
     has_many :favorites, as: :favoriterable
     has_many :notifications, as: :notifiable
     has_many :event_memberships_as_owner_or_performer, -> { as_owner_or_performer }, as: :memberable, source: 'event_member', class_name: 'EventMember'
+    has_many :reviews, as: :reviewable, source: 'review'
+    has_many :reviews_given, as: :reviewerable, source: 'review', class_name: 'Review'
 
     scope :active, -> { where(workflow_state: :active) }
     scope :with_user_as_member, -> (user_id) { where("EXISTS (SELECT 1 FROM entity_users eu WHERE eu.userable_type = '#{name}' AND eu.userable_id = #{quoted_table_name}.#{quoted_primary_key} AND eu.user_id = #{user_id} LIMIT 1)") }
 
     def class_type
       self.class.to_s
-    end
-
-    def reviews
-      Review.where(reviewable: self)
-    end
-
-    def reviews_given
-      Review.where(reviewerable: self)
     end
 
     def favorite_entities
