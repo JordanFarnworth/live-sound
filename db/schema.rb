@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160804170908) do
+ActiveRecord::Schema.define(version: 20160806180414) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,10 +29,10 @@ ActiveRecord::Schema.define(version: 20160804170908) do
     t.string   "email"
     t.string   "genre"
     t.string   "phone_number"
-    t.string   "state"
     t.text     "settings"
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
+    t.string   "workflow_state"
   end
 
   create_table "enterprises", force: :cascade do |t|
@@ -48,7 +48,7 @@ ActiveRecord::Schema.define(version: 20160804170908) do
     t.string   "youtube_link"
     t.string   "email"
     t.string   "phone_number"
-    t.string   "state"
+    t.string   "workflow_state"
     t.text     "settings"
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
@@ -56,36 +56,36 @@ ActiveRecord::Schema.define(version: 20160804170908) do
 
   create_table "entity_users", force: :cascade do |t|
     t.integer  "user_id"
-    t.string   "status"
-    t.string   "state"
+    t.string   "workflow_state"
     t.string   "userable_type"
     t.integer  "userable_id"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
     t.index ["user_id"], name: "index_entity_users_on_user_id", using: :btree
     t.index ["userable_type", "userable_id"], name: "index_entity_users_on_userable_type_and_userable_id", using: :btree
   end
 
   create_table "event_applications", force: :cascade do |t|
     t.integer  "event_id"
-    t.string   "status"
-    t.string   "state"
+    t.string   "workflow_state"
     t.string   "applicable_type"
     t.integer  "applicable_id"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+    t.string   "application_type"
     t.index ["applicable_type", "applicable_id"], name: "index_event_applications_on_applicable_type_and_applicable_id", using: :btree
     t.index ["event_id"], name: "index_event_applications_on_event_id", using: :btree
   end
 
   create_table "event_invitations", force: :cascade do |t|
     t.integer  "event_id"
-    t.string   "status"
-    t.string   "state"
+    t.string   "workflow_state"
     t.string   "invitable_type"
     t.integer  "invitable_id"
-    t.datetime "created_at",     null: false
-    t.datetime "updated_at",     null: false
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.string   "invitation_type"
+    t.datetime "deleted_at"
     t.index ["event_id"], name: "index_event_invitations_on_event_id", using: :btree
     t.index ["invitable_type", "invitable_id"], name: "index_event_invitations_on_invitable_type_and_invitable_id", using: :btree
   end
@@ -93,7 +93,7 @@ ActiveRecord::Schema.define(version: 20160804170908) do
   create_table "event_members", force: :cascade do |t|
     t.integer  "event_id"
     t.string   "member_type"
-    t.string   "status"
+    t.string   "workflow_state"
     t.string   "memberable_type"
     t.integer  "memberable_id"
     t.datetime "created_at",      null: false
@@ -108,7 +108,7 @@ ActiveRecord::Schema.define(version: 20160804170908) do
     t.string   "recurrence_pattern"
     t.datetime "recurrence_ends_at"
     t.string   "status"
-    t.string   "state"
+    t.string   "workflow_state"
     t.integer  "price"
     t.string   "title"
     t.text     "description"
@@ -124,6 +124,7 @@ ActiveRecord::Schema.define(version: 20160804170908) do
     t.integer  "favoriterable_id"
     t.string   "favoritable_type"
     t.integer  "favoritable_id"
+    t.string   "workflow_state"
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
     t.index ["favoritable_type", "favoritable_id"], name: "index_favorites_on_favoritable_type_and_favoritable_id", using: :btree
@@ -145,7 +146,7 @@ ActiveRecord::Schema.define(version: 20160804170908) do
     t.string   "contextable_type"
     t.integer  "contextable_id"
     t.text     "description"
-    t.string   "state"
+    t.string   "workflow_state"
     t.datetime "deleted_at"
     t.datetime "created_at",       null: false
     t.datetime "updated_at",       null: false
@@ -167,7 +168,7 @@ ActiveRecord::Schema.define(version: 20160804170908) do
     t.string   "email"
     t.string   "phone_number"
     t.text     "settings"
-    t.string   "state"
+    t.string   "workflow_state"
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
   end
@@ -179,6 +180,7 @@ ActiveRecord::Schema.define(version: 20160804170908) do
     t.integer  "reviewable_id"
     t.text     "text"
     t.integer  "rating"
+    t.string   "workflow_state"
     t.datetime "created_at",        null: false
     t.datetime "updated_at",        null: false
     t.index ["reviewable_type", "reviewable_id"], name: "index_reviews_on_reviewable_type_and_reviewable_id", using: :btree
@@ -190,7 +192,7 @@ ActiveRecord::Schema.define(version: 20160804170908) do
     t.string   "display_name"
     t.string   "email"
     t.string   "password_digest"
-    t.string   "state"
+    t.string   "workflow_state"
     t.string   "registration_token"
     t.text     "settings"
     t.boolean  "single_user"

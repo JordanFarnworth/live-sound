@@ -7,7 +7,5 @@ class CreateJwtSessions < ActiveRecord::Migration[5.0]
       t.timestamps
     end
     add_index :jwt_sessions, :jwt_id
-
-    drop_table :api_keys
   end
 end

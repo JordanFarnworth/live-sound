@@ -3,7 +3,7 @@ module Api::V1::EventInvitation
   include Api::V1::Event
 
   def event_invitation_json(event_invitations, includes = [])
-    attributes = %w(id event_id status state applicable)
+    attributes = %w(id event_id status workflow_state invitable_id invitable_type, invitation_type)
 
     api_json(event_invitations, only: attributes).tap do |hash|
       hash['event'] = event_json(event_invitations.event) if includes.include?('with_events')
