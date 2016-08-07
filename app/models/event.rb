@@ -22,6 +22,14 @@ class Event < ApplicationRecord
   }
   scope :visible_to_user, -> (user_id) { active.or(with_user_as_member(user_id)) }
 
+  def entities_by_role(role)
+    entities = event_members.where(role: role).includes(:memberable).map(&:memberable).distinct
+  end
+
+  def roles_for_user(user)
+    event_memberships_for_user(user).distinct.pluck(:role)
+  end
+
   def all_members
     members = []
     members << bands
@@ -38,13 +46,13 @@ class Event < ApplicationRecord
     applications.flatten.uniq
   end
 
-  def add_member(member, type, workflow_state = 'active')
-    EventMember.find_or_create_by!(memberable: member, member_type: type, event: self, workflow_state: workflow_state)
+  def add_member(member, role, workflow_state = 'active')
+    EventMember.find_or_create_by!(memberable: member, event: self, role: role, workflow_state: workflow_state)
   end
 
-  def invite_member(invitee, type, workflow_state = 'pending')
+  def invite_member(invitee, roles, workflow_state = 'pending')
     # TODO add hook to delete this when a invitee accepts/declines
-    EventInvitation.find_or_create_by!(invitable: invitee, invitation_type: type, event: self, workflow_state: workflow_state)
+    EventInvitation.find_or_create_by!(invitable: invitee, role: role, event: self, workflow_state: workflow_state)
   end
 
   def event_memberships_for_user(user)
@@ -53,7 +61,7 @@ class Event < ApplicationRecord
   end
 
   def active?
-    state == 'active'
+    workflow_state == 'active'
   end
 
 end

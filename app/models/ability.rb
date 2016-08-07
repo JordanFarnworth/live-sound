@@ -18,6 +18,10 @@ class Ability
       event.event_memberships_for_user(user).as_owner.exists?
     end
 
+    can :create_event_member, Event do |event|
+      event.event_memberships_for_user(user).as_owner_or_admin.exists?
+    end
+
     can :create, Event if user.persisted? && context.try(:entity_user_for_user, user)
 
     # reviews

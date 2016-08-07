@@ -30,7 +30,10 @@ Rails.application.routes.draw do
       resources :bands, concerns: [:entity_context]
       resources :enterprises, concerns: [:entity_context]
       resources :private_parties, concerns: [:entity_context]
-      resources :events, only: [:index]
+      resources :events, only: [:index] do
+        resources :event_members
+        resources :event_invitations
+      end
     end
   end
 

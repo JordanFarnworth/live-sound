@@ -6,7 +6,9 @@ class EventInvitationsController < ApplicationController
   # TODO need to filter some of these actions (update, delete. create) via event_roles (owner, admin)
 
   def index
-    @event_invitations = EventInvitation.includes(:event).where(invitable: @context)
+    @event = Event.find params[:event_id] || event_invitation_params[:event_id]
+    @event_invitations ||= EventInvitation.includes(:event).where(event: @event) unless @event.blank?
+    @event_invitations ||= EventInvitation.all
     render json: paginated_json(@event_invitations) { |event_invitations| event_invitations_json(event_invitations) }
   end
 
@@ -15,7 +17,14 @@ class EventInvitationsController < ApplicationController
   end
 
   def create
-    @event_invitation = EventInvitation.new event_invitation_params
+    @event = Event.find params[:event_id] || event_invitation_params[:event_id]
+    unless @event.nil?
+      if can?(:create_event_member, @event)
+        @event_invitation ||= EventInvitation.new event_invitation_params
+        @event_invitation.event_id = @event.id
+      end
+    end
+    @event_invitation ||= EventInvitation.new event_invitation_params
     if @event_invitation.save
       render json: event_invitation_json(@event_invitation, get_includes), status: :ok
     else
@@ -43,7 +52,7 @@ class EventInvitationsController < ApplicationController
   end
 
   def event_invitation_params
-    params.require(:event_invitation).permit(:id, :event_id, :workflow_state, :invitable_type, :invitable_id, :invitation_type,  :created_at, :updated_at)
+    params.require(:event_invitation).permit(:id, :event_id, :workflow_state, :invitable_type, :invitable_id, :role,  :created_at, :updated_at)
   end
 
 end

@@ -63,17 +63,17 @@ module Entityable
     end
 
     def events_as_performer
-      memberships = event_members.where(member_type: 'performer').includes(:event)
+      memberships = event_members.where(role: 'performer').includes(:event)
       memberships.map(&:event)
     end
 
     def events_as_owner
-      memberships = event_members.where(member_type: 'owner').includes(:event)
+      memberships = event_members.where(role: 'owner').includes(:event)
       memberships.map(&:event)
     end
 
     def events_as_attendee
-      memberships = event_members.where(member_type: 'attendee').includes(:event)
+      memberships = event_members.where(role: 'attendee').includes(:event)
       memberships.map(&:event)
     end
 
