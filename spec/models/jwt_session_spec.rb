@@ -6,4 +6,8 @@ RSpec.describe JwtSession, type: :model do
     jwt.save
     expect(jwt.jwt_id).to_not be_nil
   end
+
+  let(:jwt_session){ FactoryGirl.build(:jwt_session) }
+
+  it { should belong_to(:user) }
 end

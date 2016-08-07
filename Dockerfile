@@ -20,6 +20,7 @@ RUN apt-get install -y build-essential nodejs vim git wget libfreetype6 libfontc
 
 RUN mkdir -p /usr/src/app
 ADD . /usr/src/app/
+RUN rm /usr/src/app/.rspec && echo '--require spec_helper' > /usr/src/app/.rspec
 RUN rm -rf /usr/src/app/node_modules
 WORKDIR /usr/src/app
 
