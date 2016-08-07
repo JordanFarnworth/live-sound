@@ -3,6 +3,14 @@ class ApplicationController < ActionController::Base
   include JwtHelper
   protect_from_forgery with: :null_session
 
+  rescue_from CanCan::AccessDenied do
+    render json: { message: 'You are not authorized to access this resource' }, status: :unauthorized
+  end
+
+  rescue_from ActiveRecord::RecordNotFound do
+    render json: { message: 'resource not found' }, status: :not_found
+  end
+
   def get_includes
     @includes ||= (params[:includes] || [])
   end

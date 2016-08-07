@@ -5,6 +5,8 @@ class EventMember < ApplicationRecord
   WORKFLOW_STATES = %w(active pending)
   MEMBER_TYPES = %w(owner performer attendee admin)
 
+  acts_as_paranoid
+
   scope :as_owner, -> { where(member_type: 'owner') }
   scope :as_owner_or_performer, -> { where(member_type: %w(owner performer)) }
 

@@ -7,6 +7,8 @@ class Event < ApplicationRecord
   has_many :event_invitations
   has_many :notifications, as: :contextable
 
+  acts_as_paranoid
+
   scope :active, -> { where(workflow_state: 'active') }
   scope :with_user_as_member, -> (user_id) {
     where <<-SQL
@@ -43,6 +45,15 @@ class Event < ApplicationRecord
   def invite_member(invitee, type, workflow_state = 'pending')
     # TODO add hook to delete this when a invitee accepts/declines
     EventInvitation.find_or_create_by!(invitable: invitee, invitation_type: type, event: self, workflow_state: workflow_state)
+  end
+
+  def event_memberships_for_user(user)
+    event_members.joins("INNER JOIN entity_users ON entity_users.userable_type = event_members.memberable_type AND entity_users.userable_id = event_members.memberable_id")
+      .where("entity_users.user_id = ?", user.id)
+  end
+
+  def active?
+    state == 'active'
   end
 
 end
