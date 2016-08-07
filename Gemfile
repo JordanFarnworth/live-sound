@@ -41,6 +41,7 @@ group :development, :test do
   gem 'listen', '~> 3.0.5'
   gem 'factory_girl_rails'
   gem 'nyan-cat-formatter', '~> 0.10.1'
+  gem 'shoulda-matchers', '~> 3.1'
   gem 'timecop'
   gem 'simplecov'
   gem 'pry-rails'
