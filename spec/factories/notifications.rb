@@ -1,11 +1,8 @@
 FactoryGirl.define do
   factory :notification, class: Notification do
-    id 12345
-    notifiable_id 'notifiable_id'
-    notifiable_type 'notifiable_type'
-    contextable_id 12345
-    contextable_type 'contextable_type'
-    description 'description'
-    state ''
+    association :notifiable, factory: :user
+    association :contextable, factory: :event_application
+    description { Forgery::LoremIpsum.paragraph }
+    workflow_state 'new'
   end
 end

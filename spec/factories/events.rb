@@ -1,14 +1,12 @@
 FactoryGirl.define do
   factory :event, class: Event do
-    id 1234
     recurrence_pattern "weekly"
-    state "state"
-    price 1
-    title "event_title"
-    description "event_description"
-    status "event_status"
-    address "877 Sesame Street"
-    longitude 40.7608
-    latitude 111.8910
+    workflow_state 'active'
+    price { (1..100).to_a.sample }
+    title { Forgery::LoremIpsum.characters }
+    description { Forgery::LoremIpsum.paragraph }
+    address { Forgery::Address.street_address }
+    longitude { Forgery::Geo.longitude }
+    latitude { Forgery::Geo.latitude }
   end
 end
