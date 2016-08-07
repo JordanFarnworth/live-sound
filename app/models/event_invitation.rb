@@ -11,4 +11,10 @@ class EventInvitation < ApplicationRecord
   validates :invitation_type, presence: true, inclusion: INVITATION_TYPES
   validates :workflow_state, presence: true, inclusion: WORKFLOW_STATES
 
+  before_validation :infer_values
+
+  def infer_values
+    self.workflow_state ||= 'pending'
+  end
+
 end

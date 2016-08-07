@@ -2,8 +2,8 @@ class EventMember < ApplicationRecord
   belongs_to :event
   belongs_to :memberable, polymorphic: true
 
-  WORKFLOW_STATES = %w(active)
-  MEMBER_TYPES = %w(owner, performer, attendee, admin)
+  WORKFLOW_STATES = %w(active pending)
+  MEMBER_TYPES = %w(owner performer attendee admin)
 
   scope :as_owner, -> { where(member_type: 'owner') }
   scope :as_owner_or_performer, -> { where(member_type: %w(owner performer)) }
@@ -14,4 +14,9 @@ class EventMember < ApplicationRecord
   validates :member_type, presence: true, inclusion: MEMBER_TYPES
   validates :workflow_state, presence: true, inclusion: WORKFLOW_STATES
 
+  before_validation :infer_values
+
+  def infer_values
+    self.workflow_state ||= 'active'
+  end
 end

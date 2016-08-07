@@ -36,17 +36,11 @@ class Event < ApplicationRecord
     applications.flatten.uniq
   end
 
-  def add_member(member, type, workflow_state="active")
+  def add_member(member, type, workflow_state = 'active')
     EventMember.find_or_create_by!(memberable: member, member_type: type, event: self, workflow_state: workflow_state)
   end
 
-  def add_members(*members)
-    raise "need all args: member|member_type|workflow_state(workflow_state optional)" unless member[0].present? && member[1].present?
-    # members must be passed as: [member, member_type, workflow_state]
-    members.each { |member| add_member(member[0], member[1], member.try(:[], 2))}
-  end
-
-  def invite_member(invitee, type, workflow_state="pending")
+  def invite_member(invitee, type, workflow_state = 'pending')
     # TODO add hook to delete this when a invitee accepts/declines
     EventInvitation.find_or_create_by!(invitable: invitee, invitation_type: type, event: self, workflow_state: workflow_state)
   end
