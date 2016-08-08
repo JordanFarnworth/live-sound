@@ -5,6 +5,9 @@ class Ability
     user ||= User.new(id: -1)
 
     can :read, Band, Band.active.or(Band.with_user_as_member(user.id))
+    can :read, PrivateParty, PrivateParty.active.or(PrivateParty.with_user_as_member(user.id))
+    can :read, Enterprise, Enterprise.active.or(Enterprise.with_user_as_member(user.id))
+    can :read, User, id: user.id
 
     # events
     can :read, Event do |event|
@@ -23,6 +26,14 @@ class Ability
     can :create, Review if user.persisted?
     can [:update, :destroy], Review do |review|
       review.reviewerable.entity_user_for_user(user)
+    end
+
+    # favorites
+    can :read, Favorite if user.persisted?
+    can :mine, Favorite if user.persisted? && context.try(:entity_user_for_user, user)
+    can :create, Favorite if user.persisted?
+    can :destroy, Favorite do |favorite|
+      favorite.favoriterable.entity_user_for_user(user)
     end
   end
 end

@@ -49,6 +49,6 @@ class EventsController < ApplicationController
 
   private
   def event_params
-    params.require(:event).permit(:start_time, :end_time, :recurrence_pattern, :recurrence_ends_at, :status, :state, :price, :title, :description, :address, :latitude, :longitude)
+    params.require(:event).permit(:start_time, :end_time, :recurrence_pattern, :recurrence_ends_at, :status, :workflow_state, :price, :title, :description, :address, :latitude, :longitude)
   end
 end
