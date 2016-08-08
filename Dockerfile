@@ -22,6 +22,7 @@ RUN mkdir -p /usr/src/app
 ADD . /usr/src/app/
 RUN rm /usr/src/app/.rspec && echo '--require spec_helper' > /usr/src/app/.rspec
 RUN rm -rf /usr/src/app/node_modules
+RUN cp /usr/src/app/config/database.yml.docker /usr/src/app/config/database.yml
 WORKDIR /usr/src/app
 
 ENV RAILS_ENV test

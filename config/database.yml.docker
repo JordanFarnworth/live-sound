@@ -1,0 +1,16 @@
+development: &default
+  adapter: postgresql
+  encoding: utf8
+  database: live_sound_development
+  pool: 5
+  username: postgres
+  password:
+  host: <%= ENV['DB_PORT_5432_TCP_ADDR'] %>
+
+test:
+  <<: *default
+  database: live_sound_test
+
+production:
+  <<: *default
+  database: live_sound_production
