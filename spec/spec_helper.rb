@@ -1,4 +1,5 @@
 require 'factory_girl_rails'
+require_relative './support/json.rb'
 
 RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods

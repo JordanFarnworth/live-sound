@@ -16,5 +16,13 @@ class Ability
     end
 
     can :create, Event if user.persisted? && context.try(:entity_user_for_user, user)
+
+    # reviews
+    can :read, Review, workflow_state: 'active'
+
+    can :create, Review if user.persisted?
+    can [:update, :destroy], Review do |review|
+      review.reviewerable.entity_user_for_user(user)
+    end
   end
 end
