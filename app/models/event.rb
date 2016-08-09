@@ -17,6 +17,7 @@ class Event < ApplicationRecord
         INNER JOIN entity_users ON entity_users.userable_type = event_members.memberable_type
         AND entity_users.userable_id = event_members.memberable_id
         AND entity_users.user_id = #{user_id}
+        WHERE event_members.deleted_at IS NULL
       )
     SQL
   }

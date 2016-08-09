@@ -74,7 +74,9 @@ ActiveRecord::Schema.define(version: 20160810193105) do
     t.datetime "updated_at",     null: false
     t.datetime "deleted_at"
     t.string   "role"
+    t.index ["deleted_at"], name: "index_event_invitations_on_deleted_at", using: :btree
     t.index ["event_id"], name: "index_event_invitations_on_event_id", using: :btree
+    t.index ["invitable_id", "invitable_type", "role"], name: "index_event_invitations_on_invitable_id_type_role", unique: true, using: :btree
     t.index ["invitable_type", "invitable_id"], name: "index_event_invitations_on_invitable_type_and_invitable_id", using: :btree
     t.index ["role"], name: "index_event_invitations_on_role", using: :btree
   end
@@ -90,6 +92,7 @@ ActiveRecord::Schema.define(version: 20160810193105) do
     t.string   "role"
     t.index ["deleted_at"], name: "index_event_members_on_deleted_at", using: :btree
     t.index ["event_id"], name: "index_event_members_on_event_id", using: :btree
+    t.index ["memberable_id", "memberable_type", "role"], name: "index_event_members_on_memberable_id_type_role", unique: true, using: :btree
     t.index ["memberable_type", "memberable_id"], name: "index_event_members_on_memberable_type_and_memberable_id", using: :btree
     t.index ["role"], name: "index_event_members_on_role", using: :btree
   end
@@ -118,7 +121,6 @@ ActiveRecord::Schema.define(version: 20160810193105) do
     t.integer  "favoriterable_id"
     t.string   "favoritable_type"
     t.integer  "favoritable_id"
-    t.string   "workflow_state"
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
     t.index ["favoritable_type", "favoritable_id"], name: "index_favorites_on_favoritable_type_and_favoritable_id", using: :btree

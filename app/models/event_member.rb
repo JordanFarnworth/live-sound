@@ -22,5 +22,6 @@ class EventMember < ApplicationRecord
 
   def infer_values
     self.workflow_state ||= 'active'
+    self.role ||= 'attendee'
   end
 end

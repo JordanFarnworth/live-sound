@@ -4,6 +4,7 @@ class EventMembersController < ApplicationController
   include EventContext
 
   before_action :find_event_member, only: [:show, :update, :destroy]
+  authorize_resource except: [:index]
 
   def index
     @event_members = @context.event_members
@@ -15,20 +16,20 @@ class EventMembersController < ApplicationController
   end
 
   def create
-    @event_member = EventMember.new event_member_params
+    @event_member = @event.event_members.new create_event_member_params
     @event_member.event = @event
     if @event_member.save
       render json: event_member_json(@event_member, get_includes), status: :ok
     else
-      render json: {error: "#{@event_member.errors.full_messages}"}, status: :bad_request
+      render json: @event_member.errors, status: :bad_request
     end
   end
 
   def update
-    if @event_member.update event_member_params
+    if @event_member.update update_event_member_params
       render json: event_member_json(@event_member, get_includes), status: :ok
     else
-      render json: {error: @event_member.errors.full_messages.to_s}, status: :bad_request
+      render json: @event_member.errors, status: :bad_request
     end
   end
 
@@ -40,11 +41,15 @@ class EventMembersController < ApplicationController
   private
 
   def find_event_member
-    @event_member = EventMember.find params[:id] || params[:event_member_id]
+    @event_member = EventMember.find params[:event_member_id] || params[:id]
   end
 
-  def event_member_params
-      params.require(:event_member).permit(:id, :event_id, :role, :workflow_state, :memberable_type, :memberable_id, :created_at, :updated_at)
+  def create_event_member_params
+    params.require(:event_member).permit(:role, :workflow_state, :memberable_type, :memberable_id)
+  end
+
+  def update_event_member_params
+    params.require(:event_member).permit(:role, :workflow_state)
   end
 
 end

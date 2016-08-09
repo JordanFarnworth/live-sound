@@ -5,7 +5,7 @@ Rails.application.routes.draw do
       concern :entity_context do
         resources :event_applications
         resources :event_invitations
-        resources :event_members
+        resources :event_members, only: [:index]
         resources :favorites, only: [:index, :create, :destroy], shallow: true do
           get :mine, on: :collection
         end

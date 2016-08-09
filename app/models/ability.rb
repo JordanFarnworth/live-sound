@@ -8,19 +8,12 @@ class Ability
     can :read, PrivateParty, PrivateParty.active.or(PrivateParty.with_user_as_member(user.id))
     can :read, Enterprise, Enterprise.active.or(Enterprise.with_user_as_member(user.id))
     can :read, User, id: user.id
-    can :read, EventMember, EventMember.active
 
     # events
-    can :read, Event do |event|
-      event.active? || event.event_memberships_for_user(user).exists?
-    end
+    can :read, Event, Event.visible_to_user(user.id)
 
     can [:update, :destroy], Event do |event|
       event.event_memberships_for_user(user).as_owner.exists?
-    end
-
-    can :create_event_member, Event do |event|
-      event.event_memberships_for_user(user).as_owner_or_admin.exists?
     end
 
     can :create, Event if user.persisted? && context.try(:entity_user_for_user, user)
@@ -40,5 +33,11 @@ class Ability
     can :destroy, Favorite do |favorite|
       favorite.favoriterable.entity_user_for_user(user)
     end
+
+    # event members
+    can :read, EventMember, EventMember.active
+    can :create, EventMember if user.persisted?
+    can :update, EventMember
+    can :destroy, EventMember
   end
 end
