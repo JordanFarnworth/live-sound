@@ -2,7 +2,7 @@ module Api::V1::Event
   include Api::V1::Json
 
   def event_json(event, includes = [])
-    attributes = %w(id title description start_time end_time recurrence_pattern recurrence_ends_at status price address latitude longitude)
+    attributes = %w(id title description start_time end_time recurrence_pattern recurrence_ends_at workflow_state status price address latitude longitude)
 
     api_json(event, only: attributes)
   end

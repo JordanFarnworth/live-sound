@@ -23,7 +23,7 @@ class Event < ApplicationRecord
   scope :visible_to_user, -> (user_id) { active.or(with_user_as_member(user_id)) }
 
   def entities_by_role(role)
-    entities = event_members.where(role: role).includes(:memberable).map(&:memberable).distinct
+    entities = event_members.where(role: role).includes(:memberable).map(&:memberable).uniq
   end
 
   def roles_for_user(user)
@@ -50,7 +50,7 @@ class Event < ApplicationRecord
     EventMember.find_or_create_by!(memberable: member, event: self, role: role, workflow_state: workflow_state)
   end
 
-  def invite_member(invitee, roles, workflow_state = 'pending')
+  def invite_member(invitee, role, workflow_state = 'pending')
     # TODO add hook to delete this when a invitee accepts/declines
     EventInvitation.find_or_create_by!(invitable: invitee, role: role, event: self, workflow_state: workflow_state)
   end

@@ -5,9 +5,11 @@ Rails.application.routes.draw do
       concern :entity_context do
         resources :event_applications
         resources :event_invitations
+        resources :event_members
         resources :favorites, only: [:index, :create, :destroy], shallow: true do
           get :mine, on: :collection
         end
+        resources :favorites
         resources :notifications
         resources :reviews
         resources :entity_users
@@ -34,6 +36,11 @@ Rails.application.routes.draw do
         resources :event_members
         resources :event_invitations
       end
+      resources :events, only: [:index]
+      resources :bands, concerns: [:entity_context]
+      resources :enterprises, concerns: [:entity_context]
+      resources :private_parties, concerns: [:entity_context,]
+      resources :events, only: [:index]
     end
   end
 

@@ -8,6 +8,7 @@ class Ability
     can :read, PrivateParty, PrivateParty.active.or(PrivateParty.with_user_as_member(user.id))
     can :read, Enterprise, Enterprise.active.or(Enterprise.with_user_as_member(user.id))
     can :read, User, id: user.id
+    can :read, EventMember, EventMember.active
 
     # events
     can :read, Event do |event|

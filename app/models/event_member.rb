@@ -10,6 +10,7 @@ class EventMember < ApplicationRecord
   scope :as_owner, -> { where(role: 'owner') }
   scope :as_owner_or_admin, -> { where(role: %w(owner admin)) }
   scope :as_owner_or_performer, -> { where(role: %w(owner performer)) }
+  scope :active, -> { where(workflow_state: 'active') }
 
   validates :event_id, presence: true, uniqueness: { scope: [:memberable_id, :memberable_type, :role] }
   validates :memberable_id, presence: true

@@ -1,14 +1,12 @@
 class EventMembersController < ApplicationController
   include Api::V1::EventMember
   include EntityContext
+  include EventContext
 
   before_action :find_event_member, only: [:show, :update, :destroy]
-  # TODO need to filter some of these actions (update, delete. create) via event_roles (owner, admin)
 
   def index
-    @event = Event.find params[:event_id] || event_member_params[:event_id]
-    @event_members ||= EventMember.includes(:event).where(event: @event) unless @event.blank?
-    @event_members ||= EventMember.all
+    @event_members = @context.event_members
     render json: paginated_json(@event_members) { |event_members| event_members_json(event_members) }
   end
 
@@ -17,14 +15,8 @@ class EventMembersController < ApplicationController
   end
 
   def create
-    @event = Event.find params[:event_id] || event_member_params[:event_id]
-    unless @event.blank?
-      if can?(:create_event_member, @event)
-        @event_member = EventMember.new event_member_params
-        @event_member.event_id = @event.id
-      end
-    end
-    @event_member ||= EventMember.new event_member_params
+    @event_member = EventMember.new event_member_params
+    @event_member.event = @event
     if @event_member.save
       render json: event_member_json(@event_member, get_includes), status: :ok
     else
