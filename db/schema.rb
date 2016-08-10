@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160806180414) do
+ActiveRecord::Schema.define(version: 20160810193105) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -144,6 +144,53 @@ ActiveRecord::Schema.define(version: 20160806180414) do
     t.index ["user_id"], name: "index_jwt_sessions_on_user_id", using: :btree
   end
 
+  create_table "message_participants", force: :cascade do |t|
+    t.integer  "message_id"
+    t.integer  "entity_id"
+    t.string   "entity_type"
+    t.string   "workflow_state"
+    t.datetime "deleted_at"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+    t.index ["deleted_at"], name: "index_message_participants_on_deleted_at", using: :btree
+    t.index ["entity_id", "entity_type"], name: "index_message_participants_on_entity_id_and_entity_type", using: :btree
+    t.index ["message_id"], name: "index_message_participants_on_message_id", using: :btree
+  end
+
+  create_table "message_thread_participants", force: :cascade do |t|
+    t.integer  "message_thread_id"
+    t.integer  "entity_id"
+    t.string   "entity_type"
+    t.string   "workflow_state"
+    t.datetime "deleted_at"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+    t.index ["deleted_at"], name: "index_message_thread_participants_on_deleted_at", using: :btree
+    t.index ["entity_id", "entity_type"], name: "index_message_thread_participants_on_entity_id_and_entity_type", using: :btree
+    t.index ["message_thread_id"], name: "index_message_thread_participants_on_message_thread_id", using: :btree
+  end
+
+  create_table "message_threads", force: :cascade do |t|
+    t.string   "subject"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_message_threads_on_deleted_at", using: :btree
+  end
+
+  create_table "messages", force: :cascade do |t|
+    t.integer  "message_thread_id"
+    t.text     "body"
+    t.integer  "author_id"
+    t.string   "author_type"
+    t.datetime "deleted_at"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+    t.index ["author_id", "author_type"], name: "index_messages_on_author_id_and_author_type", using: :btree
+    t.index ["deleted_at"], name: "index_messages_on_deleted_at", using: :btree
+    t.index ["message_thread_id"], name: "index_messages_on_message_thread_id", using: :btree
+  end
+
   create_table "notifications", force: :cascade do |t|
     t.string   "notifiable_type"
     t.integer  "notifiable_id"
@@ -218,4 +265,7 @@ ActiveRecord::Schema.define(version: 20160806180414) do
   add_foreign_key "event_invitations", "events"
   add_foreign_key "event_members", "events"
   add_foreign_key "jwt_sessions", "users"
+  add_foreign_key "message_participants", "messages"
+  add_foreign_key "message_thread_participants", "message_threads"
+  add_foreign_key "messages", "message_threads"
 end
