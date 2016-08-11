@@ -12,6 +12,12 @@ Rails.application.routes.draw do
         resources :reviews
         resources :entity_users
         resources :events, only: [:index, :show, :create, :update, :destroy], shallow: true
+        resources :messages, only: [:index, :destroy, :show, :create] do
+          member do
+            post :mark_as_read
+            delete :remove_messages
+          end
+        end
       end
       post 'login' => 'sessions#verify'
       get 'current_user' => 'sessions#logged_in_user'

@@ -11,6 +11,8 @@ class Message < ApplicationRecord
 
   after_save :populate_participants_from_thread
 
+  scope :reverse_chronological, -> { order(id: :desc) }
+
   def add_participant(entity)
     message_participants.find_or_create_by(entity: entity)
   end

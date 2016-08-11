@@ -1,5 +1,5 @@
 class MessageThread < ApplicationRecord
-  has_many :messages, dependent: :destroy, inverse_of: :message_thread
+  has_many :messages, -> { reverse_chronological }, dependent: :destroy, inverse_of: :message_thread
   has_many :message_thread_participants, dependent: :destroy, inverse_of: :message_thread
 
   validates :subject, presence: true
