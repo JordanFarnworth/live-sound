@@ -13,11 +13,12 @@ class MessagesController < ApplicationController
 
   def create
     message_thread = create_message_params[:message_thread_id] && MessageThread.find(create_message_params[:message_thread_id])
-    recipients = create_message_params[:recipients] && message_thread.blank? && create_message_params[:recipients].uniq.map { |r| instantiated_object(r[:type], r[:id]) }
-    recipients ||= []
 
     # Trying to create a message on a thread you don't belong to? For shame!
     raise CanCan::AccessDenied if message_thread && !message_thread.message_thread_participants.where(entity_type: @context.class_type, entity_id: @context.id).exists?
+
+    recipients = create_message_params[:recipients] && message_thread.blank? && create_message_params[:recipients].uniq.map { |r| instantiated_object(r[:type], r[:id]) }.compact
+    recipients ||= []
 
     if recipients.blank? && message_thread.blank?
       return render json: { message: 'message[recipients] must include at least 1 valid recipient' }, status: :bad_request
@@ -61,8 +62,12 @@ class MessagesController < ApplicationController
     if params[:remove].present?
       @message_thread_participant.message_participants.where(message_id: params[:remove]).destroy_all
     end
-    load_message_thread_participant_with_scope
-    render json: message_thread_json(@message_thread_participant)
+    if @message_thread_participant.message_participants.exists?
+      load_message_thread_participant_with_scope
+      render json: message_thread_json(@message_thread_participant)
+    else
+      head :no_content
+    end
   end
 
   def destroy
