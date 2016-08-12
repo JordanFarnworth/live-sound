@@ -20,6 +20,10 @@ module Entityable
     has_many :event_memberships_as_owner_or_performer, -> { as_owner_or_performer }, as: :memberable, source: 'event_member', class_name: 'EventMember'
     has_many :reviews, as: :reviewable, source: 'review'
     has_many :reviews_given, as: :reviewerable, source: 'review', class_name: 'Review'
+    has_many :message_thread_participants, as: :entity
+    has_many :message_threads, through: :message_thread_participants
+    has_many :message_participants, as: :entity
+    has_many :messages, through: :message_participants
 
     scope :active, -> { where(workflow_state: :active) }
     scope :with_user_as_member, -> (user_id) { where("EXISTS (SELECT 1 FROM entity_users eu WHERE eu.userable_type = '#{name}' AND eu.userable_id = #{quoted_table_name}.#{quoted_primary_key} AND eu.user_id = #{user_id} LIMIT 1)") }

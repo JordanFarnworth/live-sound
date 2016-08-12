@@ -1,17 +1,16 @@
 module Api::V1::Message
   include Api::V1::Json
-  include Api::V1::Entity
+  include Api::V1::Entities
 
   def message_json(message, includes = [])
-    attributes = %w(id subject body sender_id message_thread_id created_at updated_at)
+    attributes = %w(id body author_id author_type created_at updated_at)
 
     api_json(message, only: attributes).tap do |hash|
-      hash['sender'] = entity_json(message.sender) if includes.include?('sender')
+      hash['workflow_state'] = message.message_participants.first.workflow_state
     end
   end
 
   def messages_json(messages, includes = [])
-    messages = messages.includes(:sender) if includes.include?('sender')
     messages.map { |m| message_json(m, includes) }
   end
 end
