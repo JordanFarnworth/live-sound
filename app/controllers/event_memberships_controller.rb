@@ -41,11 +41,11 @@ class EventMembershipsController < ApplicationController
   end
 
   def create_event_membership_params
-    params.require(:event_membership).permit(:role, :workflow_state, :memberable_type, :memberable_id, :event_id)
+    params.require(:event_membership).permit(:role, :workflow_state, :status, :memberable_type, :memberable_id, :event_id)
   end
 
   def update_event_membership_params
-    params.require(:event_membership).permit(:role, :workflow_state)
+    params.require(:event_membership).permit(:role, :workflow_state, :status)
   end
 
 end

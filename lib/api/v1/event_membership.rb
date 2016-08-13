@@ -3,7 +3,7 @@ module Api::V1::EventMembership
   include Api::V1::Event
 
   def event_membership_json(event_membership, includes = [])
-    attributes = %w(id event_id role workflow_state memberable_type memberable_id created_at)
+    attributes = %w(id event_id role workflow_state status memberable_type memberable_id created_at)
 
     api_json(event_membership, only: attributes)
   end

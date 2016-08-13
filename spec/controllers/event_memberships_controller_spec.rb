@@ -19,6 +19,7 @@ RSpec.describe EventMembershipsController, type: :controller do
       expect(response.code).to eq "200"
       expect(json_response["collection"].length).to eq 2
       expect(json_response["collection"].map {|em| em["id"]}).to match_array [event_membership.id, event_membership_one.id]
+      expect(json_response["collection"].map {|em| em["status"]}.uniq).to match_array ["accepted"]
     end
   end
 
@@ -31,6 +32,8 @@ RSpec.describe EventMembershipsController, type: :controller do
       expect(response.status).to eq 200
       expect(json_response["event_id"]).to eq event.id
       expect(json_response["memberable_id"]).to eq user.id
+      expect(json_response["memberable_id"]).to eq user.id
+      expect(json_response["status"]).to eq "accepted"
     end
   end
 
@@ -46,6 +49,7 @@ RSpec.describe EventMembershipsController, type: :controller do
       expect(json_response["event_id"]).to eq event.id
       expect(json_response["memberable_id"]).to eq band.id
       expect(json_response["role"]).to eq "admin"
+      expect(json_response["status"]).to eq "accepted"
     end
   end
 
