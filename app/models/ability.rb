@@ -36,6 +36,7 @@ class Ability
 
     # event members
     can :read, EventMember, EventMember.active
+    can :show, EventMember if user.persisted?
     can :create, EventMember if user.persisted?
     can :update, EventMember
     can :destroy, EventMember

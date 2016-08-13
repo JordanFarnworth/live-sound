@@ -11,10 +11,6 @@ class EventMembersController < ApplicationController
     render json: paginated_json(@event_members) { |event_members| event_members_json(event_members) }
   end
 
-  def show
-    render json: event_member_json(@event_member, get_includes), status: :ok
-  end
-
   def create
     @event_member = @event.event_members.new create_event_member_params
     @event_member.event = @event
@@ -45,7 +41,7 @@ class EventMembersController < ApplicationController
   end
 
   def create_event_member_params
-    params.require(:event_member).permit(:role, :workflow_state, :memberable_type, :memberable_id)
+    params.require(:event_member).permit(:role, :workflow_state, :memberable_type, :memberable_id, :event_id)
   end
 
   def update_event_member_params

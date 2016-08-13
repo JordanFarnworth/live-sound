@@ -20,6 +20,10 @@ class EventMember < ApplicationRecord
 
   before_validation :infer_values
 
+  def member_of_entity?(user_id)
+    memberable.entity_users.find_by(user_user).any?
+  end
+
   def infer_values
     self.workflow_state ||= 'active'
     self.role ||= 'attendee'
