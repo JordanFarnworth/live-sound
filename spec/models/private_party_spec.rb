@@ -7,8 +7,8 @@ describe PrivateParty, type: :model do
 
   let(:private_party){ FactoryGirl.build(:private_party) }
 
-  it { should have_many(:events).through(:event_members) }
-  it { should have_many(:event_members) }
+  it { should have_many(:events).through(:event_memberships) }
+  it { should have_many(:event_memberships) }
   it { should have_db_column(:deleted_at) }
   it { should serialize(:settings) }
   it { should serialize(:social_media) }

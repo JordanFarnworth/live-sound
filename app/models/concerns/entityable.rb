@@ -9,15 +9,13 @@ module Entityable
     # validates_attachment_content_type :avatar, content_type: /\Aimage\/.*\Z/
     has_many :users, through: :entity_users, as: :userable
     has_many :entity_users, as: :userable
-    has_many :events, as: :memberable, through: :event_members
-    has_many :event_members, as: :memberable
+    has_many :events, as: :memberable, through: :event_memberships
+    has_many :event_memberships, as: :memberable
     has_many :events_applied_to, through: :event_applications, as: :applicable, source: "event"
     has_many :event_applications, as: :applicable
-    has_many :event_invitations, as: :invitable
-    has_many :events_invited_to, through: :event_invitations, as: :invitable, source: "event"
     has_many :favorites, as: :favoriterable
     has_many :notifications, as: :notifiable
-    has_many :event_memberships_as_owner_or_performer, -> { as_owner_or_performer }, as: :memberable, source: 'event_member', class_name: 'EventMember'
+    has_many :event_memberships_as_owner_or_performer, -> { as_owner_or_performer }, as: :memberable, source: 'event_membership', class_name: 'EventMembership'
     has_many :reviews, as: :reviewable, source: 'review'
     has_many :reviews_given, as: :reviewerable, source: 'review', class_name: 'Review'
     has_many :message_thread_participants, as: :entity
@@ -52,9 +50,9 @@ module Entityable
       EventApplication.find_or_create_by!(applicable: self, event_id: event.id, status: status)
     end
 
-    def invite_to_event(event, invitee, status)
+    def invite_to_event(event, invitee, status = 'pending', workflow_state = 'invitation')
       #TODO only make this possible if band is the owner of the event
-      EventInvitation.find_or_create_by!(event_id: event.id, invitable: invitee, status: status)
+      EventMembershp.find_or_create_by!(event_id: event.id, memberable: invitee, status: status, workflow_state: workflow_state)
     end
 
     def add_user(user)
@@ -63,17 +61,17 @@ module Entityable
     end
 
     def events_as_performer
-      memberships = event_members.where(role: 'performer').includes(:event)
+      memberships = event_memberships.where(role: 'performer').includes(:event)
       memberships.map(&:event)
     end
 
     def events_as_owner
-      memberships = event_members.where(role: 'owner').includes(:event)
+      memberships = event_memberships.where(role: 'owner').includes(:event)
       memberships.map(&:event)
     end
 
     def events_as_attendee
-      memberships = event_members.where(role: 'attendee').includes(:event)
+      memberships = event_memberships.where(role: 'attendee').includes(:event)
       memberships.map(&:event)
     end
 

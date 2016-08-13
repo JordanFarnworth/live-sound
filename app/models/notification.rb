@@ -3,7 +3,7 @@ class Notification < ApplicationRecord
   belongs_to :contextable, polymorphic: true
 
   WORKFLOW_STATES = %w(new read)
-  CONTEXTABLES = %w(Event EventInvitation EventApplication Favorite Review EventMember)
+  CONTEXTABLES = %w(Event EventApplication Favorite Review EventMembership)
 
   validates :notifiable_id, presence: true
   validates :notifiable_type, presence: true, inclusion: Entityable::ENTITYABLE_CLASSES

@@ -35,10 +35,10 @@ class Ability
     end
 
     # event members
-    can :read, EventMember, EventMember.active
-    can :show, EventMember if user.persisted?
-    can :create, EventMember if user.persisted?
-    can :update, EventMember
-    can :destroy, EventMember
+    can :read, EventMembership, EventMembership.active
+    can :show, EventMembership if user.persisted?
+    can :create, EventMembership if user.persisted?
+    can :update, EventMembership
+    can :destroy, EventMembership
   end
 end

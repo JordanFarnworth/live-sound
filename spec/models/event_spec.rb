@@ -7,11 +7,11 @@ describe Event, type: :model do
 
   let(:event){ FactoryGirl.build(:event) }
 
-  it { should have_many(:bands).through(:event_members) }
-  it { should have_many(:enterprises).through(:event_members) }
-  it { should have_many(:private_parties).through(:event_members) }
-  it { should have_many(:users).through(:event_members) }
-  it { should have_many(:event_members) }
+  it { should have_many(:bands).through(:event_memberships) }
+  it { should have_many(:enterprises).through(:event_memberships) }
+  it { should have_many(:private_parties).through(:event_memberships) }
+  it { should have_many(:users).through(:event_memberships) }
+  it { should have_many(:event_memberships) }
   it { should have_many(:notifications) }
 
 end

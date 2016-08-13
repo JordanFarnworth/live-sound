@@ -1,8 +1,8 @@
 class PrivateParty < ApplicationRecord
   include Entityable
 
-  has_many :events, as: :memberable, through: :event_members
-  has_many :event_members, as: :memberable
+  has_many :events, as: :memberable, through: :event_memberships
+  has_many :event_memberships, as: :memberable
 
   acts_as_paranoid
 

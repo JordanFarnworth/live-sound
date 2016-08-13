@@ -4,8 +4,7 @@ Rails.application.routes.draw do
     scope :v1 do
       concern :entity_context do
         resources :event_applications
-        resources :event_invitations
-        resources :event_members, only: [:index]
+        resources :event_memberships, only: [:index]
         resources :favorites, only: [:index, :create, :destroy], shallow: true do
           get :mine, on: :collection
         end
@@ -33,13 +32,12 @@ Rails.application.routes.draw do
       resources :enterprises, concerns: [:entity_context]
       resources :private_parties, concerns: [:entity_context]
       resources :events, only: [:index] do
-        resources :event_members, only: [:create, :index, :update, :destroy], shallow: true
+        resources :event_memberships, only: [:create, :index, :update, :destroy], shallow: true
       end
       resources :events, only: [:index]
       resources :bands, concerns: [:entity_context]
       resources :enterprises, concerns: [:entity_context]
       resources :private_parties, concerns: [:entity_context]
-      resources :events, only: [:index]
     end
   end
 
