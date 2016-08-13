@@ -40,7 +40,7 @@ Rails.application.routes.draw do
       resources :enterprises, concerns: [:entity_context]
       resources :private_parties, concerns: [:entity_context,]
       resources :events, only: [:index]
-      resources :event_members, only: [:update, :delete]
+      resources :event_members, only: [:update, :destroy]
     end
   end
 
