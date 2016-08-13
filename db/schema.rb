@@ -1,16 +1,5 @@
-# This file is auto-generated from the current state of the database. Instead
-# of editing this file, please use the migrations feature of Active Record to
-# incrementally modify your database, and then regenerate this schema definition.
-#
-# Note that this schema.rb definition is the authoritative source for your
-# database schema. If you need to create the application database on another
-# system, you should be using db:schema:load, not running all the migrations
-# from scratch. The latter is a flawed and unsustainable approach (the more migrations
-# you'll amass, the slower it'll run and the greater likelihood for issues).
-#
-# It's strongly recommended that you check this file into your version control system.
-
 ActiveRecord::Schema.define(version: 20160810193105) do
+
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -82,27 +71,31 @@ ActiveRecord::Schema.define(version: 20160810193105) do
     t.string   "workflow_state"
     t.string   "invitable_type"
     t.integer  "invitable_id"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
-    t.string   "invitation_type"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
     t.datetime "deleted_at"
+    t.string   "role"
     t.index ["deleted_at"], name: "index_event_invitations_on_deleted_at", using: :btree
     t.index ["event_id"], name: "index_event_invitations_on_event_id", using: :btree
+    t.index ["invitable_id", "invitable_type", "role"], name: "index_event_invitations_on_invitable_id_type_role", unique: true, using: :btree
     t.index ["invitable_type", "invitable_id"], name: "index_event_invitations_on_invitable_type_and_invitable_id", using: :btree
+    t.index ["role"], name: "index_event_invitations_on_role", using: :btree
   end
 
   create_table "event_members", force: :cascade do |t|
     t.integer  "event_id"
-    t.string   "member_type"
     t.string   "workflow_state"
     t.string   "memberable_type"
     t.integer  "memberable_id"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
     t.datetime "deleted_at"
+    t.string   "role"
     t.index ["deleted_at"], name: "index_event_members_on_deleted_at", using: :btree
     t.index ["event_id"], name: "index_event_members_on_event_id", using: :btree
+    t.index ["memberable_id", "memberable_type", "role"], name: "index_event_members_on_memberable_id_type_role", unique: true, using: :btree
     t.index ["memberable_type", "memberable_id"], name: "index_event_members_on_memberable_type_and_memberable_id", using: :btree
+    t.index ["role"], name: "index_event_members_on_role", using: :btree
   end
 
   create_table "events", force: :cascade do |t|

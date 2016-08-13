@@ -10,9 +10,7 @@ class Ability
     can :read, User, id: user.id
 
     # events
-    can :read, Event do |event|
-      event.active? || event.event_memberships_for_user(user).exists?
-    end
+    can :read, Event, Event.visible_to_user(user.id)
 
     can [:update, :destroy], Event do |event|
       event.event_memberships_for_user(user).as_owner.exists?
@@ -35,5 +33,12 @@ class Ability
     can :destroy, Favorite do |favorite|
       favorite.favoriterable.entity_user_for_user(user)
     end
+
+    # event members
+    can :read, EventMember, EventMember.active
+    can :show, EventMember if user.persisted?
+    can :create, EventMember if user.persisted?
+    can :update, EventMember
+    can :destroy, EventMember
   end
 end

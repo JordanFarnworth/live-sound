@@ -5,9 +5,11 @@ Rails.application.routes.draw do
       concern :entity_context do
         resources :event_applications
         resources :event_invitations
+        resources :event_members, only: [:index]
         resources :favorites, only: [:index, :create, :destroy], shallow: true do
           get :mine, on: :collection
         end
+        resources :favorites
         resources :notifications
         resources :reviews
         resources :entity_users
@@ -27,6 +29,13 @@ Rails.application.routes.draw do
           post 'update' => 'users#update'
         end
       end
+      resources :bands, concerns: [:entity_context]
+      resources :enterprises, concerns: [:entity_context]
+      resources :private_parties, concerns: [:entity_context]
+      resources :events, only: [:index] do
+        resources :event_members, only: [:create, :index, :update, :destroy], shallow: true
+      end
+      resources :events, only: [:index]
       resources :bands, concerns: [:entity_context]
       resources :enterprises, concerns: [:entity_context]
       resources :private_parties, concerns: [:entity_context]
