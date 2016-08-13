@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160813203105) do
+ActiveRecord::Schema.define(version: 20160813221651) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -33,6 +33,9 @@ ActiveRecord::Schema.define(version: 20160813203105) do
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
     t.string   "workflow_state"
+    t.index ["braintree_customer_id"], name: "index_bands_on_braintree_customer_id", using: :btree
+    t.index ["deleted_at"], name: "index_bands_on_deleted_at", using: :btree
+    t.index ["name"], name: "index_bands_on_name", using: :btree
   end
 
   create_table "enterprises", force: :cascade do |t|
@@ -52,6 +55,9 @@ ActiveRecord::Schema.define(version: 20160813203105) do
     t.text     "settings"
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
+    t.index ["braintree_customer_id"], name: "index_enterprises_on_braintree_customer_id", using: :btree
+    t.index ["deleted_at"], name: "index_enterprises_on_deleted_at", using: :btree
+    t.index ["name"], name: "index_enterprises_on_name", using: :btree
   end
 
   create_table "entity_users", force: :cascade do |t|
@@ -89,8 +95,7 @@ ActiveRecord::Schema.define(version: 20160813203105) do
     t.string   "status"
     t.index ["deleted_at"], name: "index_event_memberships_on_deleted_at", using: :btree
     t.index ["event_id"], name: "index_event_memberships_on_event_id", using: :btree
-    t.index ["memberable_type", "memberable_id"], name: "index_event_memberships_on_memberable_type_and_memberable_id", using: :btree
-    t.index ["role"], name: "index_event_memberships_on_role", using: :btree
+    t.index ["memberable_id", "memberable_type", "role"], name: "index_event_members_on_memberable_id_type_role", unique: true, using: :btree
   end
 
   create_table "events", force: :cascade do |t|
@@ -117,7 +122,6 @@ ActiveRecord::Schema.define(version: 20160813203105) do
     t.integer  "favoriterable_id"
     t.string   "favoritable_type"
     t.integer  "favoritable_id"
-    t.string   "workflow_state"
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
     t.index ["favoritable_type", "favoritable_id"], name: "index_favorites_on_favoritable_type_and_favoritable_id", using: :btree
@@ -190,8 +194,9 @@ ActiveRecord::Schema.define(version: 20160813203105) do
     t.datetime "deleted_at"
     t.datetime "created_at",       null: false
     t.datetime "updated_at",       null: false
-    t.index ["contextable_type", "contextable_id"], name: "index_notifications_on_contextable_type_and_contextable_id", using: :btree
-    t.index ["notifiable_type", "notifiable_id"], name: "index_notifications_on_notifiable_type_and_notifiable_id", using: :btree
+    t.index ["contextable_id", "contextable_type"], name: "index_notifications_on_contextable_id_and_contextable_type", using: :btree
+    t.index ["deleted_at"], name: "index_notifications_on_deleted_at", using: :btree
+    t.index ["notifiable_id", "notifiable_type"], name: "index_notifications_on_notifiable_id_and_notifiable_type", using: :btree
   end
 
   create_table "private_parties", force: :cascade do |t|
@@ -211,6 +216,9 @@ ActiveRecord::Schema.define(version: 20160813203105) do
     t.string   "workflow_state"
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
+    t.index ["braintree_customer_id"], name: "index_private_parties_on_braintree_customer_id", using: :btree
+    t.index ["deleted_at"], name: "index_private_parties_on_deleted_at", using: :btree
+    t.index ["name"], name: "index_private_parties_on_name", using: :btree
   end
 
   create_table "reviews", force: :cascade do |t|
@@ -223,8 +231,8 @@ ActiveRecord::Schema.define(version: 20160813203105) do
     t.string   "workflow_state"
     t.datetime "created_at",        null: false
     t.datetime "updated_at",        null: false
-    t.index ["reviewable_type", "reviewable_id"], name: "index_reviews_on_reviewable_type_and_reviewable_id", using: :btree
-    t.index ["reviewerable_type", "reviewerable_id"], name: "index_reviews_on_reviewerable_type_and_reviewerable_id", using: :btree
+    t.index ["reviewable_id", "reviewable_type"], name: "index_reviews_on_reviewable_id_and_reviewable_type", using: :btree
+    t.index ["reviewerable_id", "reviewerable_type"], name: "index_reviews_on_reviewerable_id_and_reviewerable_type", using: :btree
   end
 
   create_table "users", force: :cascade do |t|
@@ -247,6 +255,10 @@ ActiveRecord::Schema.define(version: 20160813203105) do
     t.float    "latitude"
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
+    t.index ["deleted_at"], name: "index_users_on_deleted_at", using: :btree
+    t.index ["email"], name: "index_users_on_email", using: :btree
+    t.index ["uid"], name: "index_users_on_uid", using: :btree
+    t.index ["username"], name: "index_users_on_username", using: :btree
   end
 
   add_foreign_key "entity_users", "users"
