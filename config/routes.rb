@@ -33,14 +33,13 @@ Rails.application.routes.draw do
       resources :enterprises, concerns: [:entity_context]
       resources :private_parties, concerns: [:entity_context]
       resources :events, only: [:index] do
-        resources :event_members, only: [:create, :index]
+        resources :event_members, only: [:create, :index, :update, :destroy], shallow: true
       end
       resources :events, only: [:index]
       resources :bands, concerns: [:entity_context]
       resources :enterprises, concerns: [:entity_context]
-      resources :private_parties, concerns: [:entity_context,]
+      resources :private_parties, concerns: [:entity_context]
       resources :events, only: [:index]
-      resources :event_members, only: [:update, :destroy]
     end
   end
 

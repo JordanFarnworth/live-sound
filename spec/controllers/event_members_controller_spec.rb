@@ -14,7 +14,7 @@ RSpec.describe EventMembersController, type: :controller do
     let!(:event_member_one) {FactoryGirl.create(:event_member, event: event, memberable: band, role: "owner")}
 
     it 'should render_json of @context\'s event_memberships' do
-      process :index, method: :get, params: { band_id: band.id }
+      get :index, params: { band_id: band.id }
       expect(assigns(:context)).to eql band
       expect(response.code).to eq "200"
       expect(json_response["collection"].length).to eq 2
@@ -26,8 +26,7 @@ RSpec.describe EventMembersController, type: :controller do
     let!(:event) {FactoryGirl.create(:event)}
     let(:user_entity) {FactoryGirl.create(:user_entity, user: user)}
     it 'should create a new event_membership' do
-      post_params = {event_member: {workflow_state: 'active', role: 'admin', event_id: event.id, memberable_type: "User", memberable_id: user.id}, event_id: event.id}
-      process :create, method: :post, params: post_params
+      post :create, params: {event_member: {workflow_state: 'active', role: 'admin', event_id: event.id, memberable_type: "User", memberable_id: user.id}, event_id: event.id}
       expect(assigns(:event)).to eql event
       expect(response.status).to eq 200
       expect(json_response["event_id"]).to eq event.id
@@ -41,8 +40,7 @@ RSpec.describe EventMembersController, type: :controller do
     let!(:entity_user) {FactoryGirl.create(:entity_user, user: user, userable: band)}
     let!(:event_member) {FactoryGirl.create(:event_member, memberable: band, event: event, role: 'owner')}
     it 'should create a new event_membership' do
-      put_params = {id: event_member.id, event_member: {workflow_state: 'active', role: 'admin', event_id: event.id, memberable_type: "User", memberable_id: user.id}, event_id: event.id}
-      process :update, method: :put, params: put_params
+      put :update, params: {id: event_member.id, event_member: {workflow_state: 'active', role: 'admin', event_id: event.id, memberable_type: "User", memberable_id: user.id}, event_id: event.id}
       expect(assigns(:event)).to eql event
       expect(response.status).to eq 200
       expect(json_response["event_id"]).to eq event.id
@@ -57,9 +55,8 @@ RSpec.describe EventMembersController, type: :controller do
     let!(:entity_user) {FactoryGirl.create(:entity_user, user: user, userable: band)}
     let!(:event_member) {FactoryGirl.create(:event_member, memberable: band, event: event, role: 'owner')}
     it 'should delete a event_membership' do
-      delete_params = {id: event_member.id, event_id: event.id}
       expect(EventMember.all.count).to eq 1
-      process :destroy, method: :delete, params: delete_params
+      delete :destroy, params: {id: event_member.id, event_id: event.id}
       expect(assigns(:event)).to eql event
       expect(EventMember.all.count).to eq 0
       expect(response.code).to eq "204"
