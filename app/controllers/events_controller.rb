@@ -3,11 +3,12 @@ class EventsController < ApplicationController
   include Api::V1::Event
 
   before_action :load_event, only: [:show, :update, :destroy]
-  authorize_resource except: [:index]
+  authorize_resource except: [:index, :show]
 
   def index
     @events = if @context
-      Event.joins(:event_memberships).where(event_memberships: { id: @context.event_memberships_as_owner_or_performer })
+      @context.events
+      # Event.joins(:event_memberships).where(event_memberships: { id: @context.id })
     else
       Event.all
     end
@@ -21,8 +22,9 @@ class EventsController < ApplicationController
   end
 
   def update
-    if @event.update event_params
+    if @event.update event_params 
       render json: event_json(@event)
+      @event.delay.send_notifications!("Event #{@event.title} was updated to #{@event.attributes}")
     else
       render json: @event.errors, status: :bad_request
     end
@@ -30,6 +32,7 @@ class EventsController < ApplicationController
 
   def destroy
     @event.destroy
+    @event.delay.send_notifications!("Event #{@event.title} was destroyed by #{current_user.name}")
     head :no_content
   end
 
@@ -37,6 +40,7 @@ class EventsController < ApplicationController
     @event = Event.new event_params
     if @event.save
       @event.add_member @context, 'owner'
+      Notification.build_notification!(@context, @event, "Event #{@event.title} was created!")
       render json: event_json(@event)
     else
       render json: @event.errors, status: :bad_request

@@ -17,6 +17,10 @@ class User < ApplicationRecord
     EntityUser.where(user: self).includes(:userable).map(&:userable)
   end
 
+  def name
+    "#{display_name}"
+  end
+
   def email_blank?
     self.email.nil?
   end

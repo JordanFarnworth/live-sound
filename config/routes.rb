@@ -9,10 +9,10 @@ Rails.application.routes.draw do
           get :mine, on: :collection
         end
         resources :favorites
-        resources :notifications
+        resources :notifications, only: [:index, :show, :create, :update]
         resources :reviews
         resources :entity_users
-        resources :events, only: [:index, :show, :create, :update, :destroy], shallow: true
+        resources :events, only: [:index, :create, :update, :destroy], shallow: true
         resources :messages, only: [:index, :destroy, :show, :create] do
           member do
             post :mark_as_read
@@ -31,7 +31,7 @@ Rails.application.routes.draw do
       resources :bands, concerns: [:entity_context]
       resources :enterprises, concerns: [:entity_context]
       resources :private_parties, concerns: [:entity_context]
-      resources :events, only: [:index] do
+      resources :events, only: [:index, :show, :update] do
         resources :event_memberships, only: [:create, :index, :update, :destroy], shallow: true
       end
       resources :events, only: [:index]

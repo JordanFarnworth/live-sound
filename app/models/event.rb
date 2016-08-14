@@ -30,6 +30,14 @@ class Event < ApplicationRecord
     event_memberships_for_user(user).distinct.pluck(:role)
   end
 
+  def send_notifications!(action, members = self.all_members)
+    members.each do |member|
+      if EventMembership.where(memberable: member, event: self, workflow_state: 'active').any?
+        Notification.build_notification!(member, self, action: action)
+      end
+    end
+  end
+
   def all_members
     members = []
     members << bands
