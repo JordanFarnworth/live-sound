@@ -14,7 +14,7 @@ RSpec.describe EventsController, type: :controller do
     let!(:event) {FactoryGirl.create(:event)}
     let!(:event_one) {FactoryGirl.create(:event)}
     let!(:event_membership) {FactoryGirl.create(:event_membership, event: event, memberable: band, role: 'owner')}
-    let!(:event_membership_one) {FactoryGirl.create(:event_membership, event: event_one, memberable: band, role: 'admin')}
+    let!(:event_membership_one) {FactoryGirl.create(:event_membership, event: event_one, memberable: band, role: 'performer')}
     it 'should get the context\'s events' do
       band.reload
       get :index, params: { band_id: band.id }
