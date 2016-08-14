@@ -7,7 +7,7 @@ class EventsController < ApplicationController
 
   def index
     @events = if @context
-      Event.joins(:event_memberships).visible_to_user(current_user.id).where(event_memberships: { memberable: @context })
+      Event.joins(:event_memberships).where(event_memberships: { memberable: @context })
     else
       Event.all
     end
