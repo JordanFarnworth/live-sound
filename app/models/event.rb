@@ -53,7 +53,7 @@ class Event < ApplicationRecord
   end
 
   def active?
-    state == 'active'
+    workflow_state == 'active'
   end
 
 end

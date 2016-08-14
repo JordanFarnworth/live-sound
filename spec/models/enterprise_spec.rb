@@ -5,8 +5,12 @@ describe Enterprise, type: :model do
     expect(FactoryGirl.build(:enterprise)).to be_valid
   end
 
-  let(:enterprise){ FactoryGirl.build(:enterprise) }
+  describe 'should act as paranoid' do
+    it { should have_db_column(:deleted_at) }
+  end
 
-  it { should serialize(:settings) }
-  it { should serialize(:social_media) }
+  describe 'should serialize attributes' do
+    it { should serialize(:settings) }
+    it { should serialize(:social_media) }
+  end
 end

@@ -5,11 +5,17 @@ describe PrivateParty, type: :model do
     expect(FactoryGirl.build(:private_party)).to be_valid
   end
 
-  let(:private_party){ FactoryGirl.build(:private_party) }
+  describe 'should have valid validations' do
+    it { should have_many(:events).through(:event_members) }
+    it { should have_many(:event_members) }
+  end
 
-  it { should have_many(:events).through(:event_members) }
-  it { should have_many(:event_members) }
-  it { should have_db_column(:deleted_at) }
-  it { should serialize(:settings) }
-  it { should serialize(:social_media) }
+  describe 'should act as paranoid' do
+    it { should have_db_column(:deleted_at) }
+  end
+
+  describe 'should serialize attributes' do
+    it { should serialize(:settings) }
+    it { should serialize(:social_media) }
+  end
 end

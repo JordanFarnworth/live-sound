@@ -5,9 +5,12 @@ describe Band, type: :model do
     expect(FactoryGirl.build(:band)).to be_valid
   end
 
-  let(:band){ FactoryGirl.build(:band) }
+  describe 'should act as paranoid' do
+    it { should have_db_column(:deleted_at) }
+  end
 
-  it { should have_db_column(:deleted_at) }
-  it { should serialize(:settings) }
-  it { should serialize(:social_media) }
+  describe 'should serialize attributes' do
+    it { should serialize(:settings) }
+    it { should serialize(:social_media) }
+  end
 end
