@@ -7,8 +7,7 @@ class EventsController < ApplicationController
 
   def index
     @events = if @context
-      @context.events
-      # Event.joins(:event_memberships).where(event_memberships: { id: @context.id })
+      Event.joins(:event_memberships).visible_to_user(current_user.id).where(event_memberships: { memberable: @context })
     else
       Event.all
     end
@@ -22,7 +21,7 @@ class EventsController < ApplicationController
   end
 
   def update
-    if @event.update event_params 
+    if @event.update event_params
       render json: event_json(@event)
       @event.delay.send_notifications!("Event #{@event.title} was updated to #{@event.attributes}")
     else
