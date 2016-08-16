@@ -24,7 +24,24 @@ RSpec.describe EventMembershipsController, type: :controller do
   end
 
   describe 'POST create' do
-    let!(:event) { FactoryGirl.create(:event) }
+    let!(:band) {FactoryGirl.create(:band)}
+    let!(:event) {FactoryGirl.create(:event)}
+    let!(:entity_user) {FactoryGirl.create(:entity_user, user: user, userable: band)}
+    let!(:event_membership) {FactoryGirl.create(:event_membership, event: event, memberable: band)}
+
+    it 'should create a notification for the users in the event when another user is added.' do
+      expect(Notification.all.count).to eq 1
+      post :create, params: {event_membership: {workflow_state: 'active', role: 'admin', event_id: event.id, memberable_type: "User", memberable_id: user.id}, event_id: event.id}
+      expect(Notification.all.count).to eq 2
+      expect(Notification.all.map &:notifiable).to match_array [band, user]
+      expect(Notification.all.map(&:contextable).uniq).to eq [event]
+    end
+
+    it 'should create a notification for an invitation' do
+      expect(Notification.all.count).to eq 1
+      post :create, params: {event_membership: {workflow_state: 'invited', role: 'admin', event_id: event.id, memberable_type: "User", memberable_id: user.id}, event_id: event.id}
+      expect(Notification.all.first.notifiable).to eq band
+    end
 
     it 'should create a new event_membership' do
       post :create, params: {event_membership: {workflow_state: 'active', role: 'admin', event_id: event.id, memberable_type: "User", memberable_id: user.id}, event_id: event.id}
@@ -98,6 +115,7 @@ RSpec.describe EventMembershipsController, type: :controller do
         expect(membership.role).to eql 'attendee'
       end
     end
+
   end
 
   describe 'PUT update' do
@@ -151,6 +169,13 @@ RSpec.describe EventMembershipsController, type: :controller do
         put :update, params: { id: invitation.id, event_membership: { role: 'performer' }, event_id: event.id }
         expect(invitation.reload.role).to eql 'performer'
       end
+    end
+
+    it 'should create a notification for an invitation' do
+      expect(Notification.all.count).to eq 1
+      post :create, params: {event_membership: {workflow_state: 'invitation', status: 'pending', role: 'admin', event_id: event.id, memberable_type: "User", memberable_id: user.id}, event_id: event.id}
+      expect(Notification.all.count).to eq 2
+      expect(Notification.all.first.notifiable).to eq band
     end
   end
 

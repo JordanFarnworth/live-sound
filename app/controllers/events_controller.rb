@@ -3,7 +3,7 @@ class EventsController < ApplicationController
   include Api::V1::Event
 
   before_action :load_event, only: [:show, :update, :destroy]
-  authorize_resource except: [:index]
+  authorize_resource except: [:index, :show]
 
   def index
     @events = if @context

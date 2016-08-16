@@ -11,7 +11,7 @@ class Ability
 
     # events
     can :read, Event, Event.visible_to_user(user.id)
-
+    
     can [:update, :destroy], Event do |event|
       event.event_memberships_for_user(user).as_owner.exists?
     end

@@ -22,12 +22,36 @@ class Event < ApplicationRecord
   }
   scope :visible_to_user, -> (user_id) { active.or(with_user_as_member(user_id)) }
 
+  after_update :send_update_notification
+  after_destroy :send_destroy_notification
+  after_create :send_create_notification
+
+  def send_update_notification
+    self.delay.send_notifications!("Event #{title} was updated. at #{updated_at.to_date}")
+  end
+
+  def send_create_notification
+    self.delay.send_notifications!("Event #{title} was created at #{created_at.to_date}")
+  end
+
+  def send_destroy_notification
+    self.delay.send_notifications!("Event #{title} was destroyed at #{deleted_at.to_date}")
+  end
+
   def entities_by_role(role)
     entities = event_memberships.where(role: role).includes(:memberable).map(&:memberable).uniq
   end
 
   def roles_for_user(user)
     event_memberships_for_user(user).distinct.pluck(:role)
+  end
+
+  def send_notifications!(action, members = self.all_members)
+    members.each do |member|
+      if EventMembership.where(memberable: member, event: self, workflow_state: 'active').any?
+        Notification.build_notification!(member, self, action: action)
+      end
+    end
   end
 
   def all_members

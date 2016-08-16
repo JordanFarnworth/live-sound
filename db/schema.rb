@@ -38,6 +38,21 @@ ActiveRecord::Schema.define(version: 20160816024948) do
     t.index ["name"], name: "index_bands_on_name", using: :btree
   end
 
+  create_table "delayed_jobs", force: :cascade do |t|
+    t.integer  "priority",   default: 0, null: false
+    t.integer  "attempts",   default: 0, null: false
+    t.text     "handler",                null: false
+    t.text     "last_error"
+    t.datetime "run_at"
+    t.datetime "locked_at"
+    t.datetime "failed_at"
+    t.string   "locked_by"
+    t.string   "queue"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
+  end
+
   create_table "enterprises", force: :cascade do |t|
     t.string   "name"
     t.text     "description"
@@ -94,7 +109,6 @@ ActiveRecord::Schema.define(version: 20160816024948) do
     t.string   "role"
     t.index ["deleted_at"], name: "index_event_memberships_on_deleted_at", using: :btree
     t.index ["event_id"], name: "index_event_memberships_on_event_id", using: :btree
-    t.index ["memberable_id", "memberable_type", "role"], name: "index_event_members_on_memberable_id_type_role", unique: true, using: :btree
   end
 
   create_table "events", force: :cascade do |t|
@@ -121,6 +135,7 @@ ActiveRecord::Schema.define(version: 20160816024948) do
     t.integer  "favoriterable_id"
     t.string   "favoritable_type"
     t.integer  "favoritable_id"
+    t.string   "workflow_state"
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
     t.index ["favoritable_type", "favoritable_id"], name: "index_favorites_on_favoritable_type_and_favoritable_id", using: :btree
@@ -193,6 +208,7 @@ ActiveRecord::Schema.define(version: 20160816024948) do
     t.datetime "deleted_at"
     t.datetime "created_at",       null: false
     t.datetime "updated_at",       null: false
+    t.text     "action"
     t.index ["contextable_id", "contextable_type"], name: "index_notifications_on_contextable_id_and_contextable_type", using: :btree
     t.index ["deleted_at"], name: "index_notifications_on_deleted_at", using: :btree
     t.index ["notifiable_id", "notifiable_type"], name: "index_notifications_on_notifiable_id_and_notifiable_type", using: :btree
