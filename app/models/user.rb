@@ -18,7 +18,7 @@ class User < ApplicationRecord
   end
 
   def name
-    "#{display_name}"
+    display_name.blank? ? email : display_name
   end
 
   def email_blank?

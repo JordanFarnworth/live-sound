@@ -37,13 +37,6 @@ class EventMembershipsController < ApplicationController
     @event_membership.memberable = entity
     if @event_membership.save
       render json: event_membership_json(@event_membership, get_includes), status: :ok
-      if @event_membership.status == 'pending' && @event_membership.workflow_state == 'invitation'
-        Notification.build_notification!(@event_membership.memberable, @event_membership.event, "You have been invited to #{@event_membership.event.title}, as (an) #{@event_membership.role}")
-        @event.delay.send_notifications!("#{@event_membership.memberable.name} was invited to #{@event.title} as a(n) #{@event_membership.role}", @event.event_memberships.select {|membership| membership != @event_membership})
-      elsif @event_membership.status == 'accepted' && @event_membership.workflow_state == 'active_member'
-        Notification.build_notification!(@event_membership.memberable, @event_membership.event, "You have been added to #{@event_membership.event.title}, as (an) #{@event_membership.role}")
-        @event.delay.send_notifications!("#{@event_membership.memberable.name} was added to #{@event.title} as a(n) #{@event_membership.role}", @event.event_memberships.select {|membership| membership != @event_membership})
-      end
     else
       render json: @event_membership.errors, status: :bad_request
     end
@@ -73,7 +66,7 @@ class EventMembershipsController < ApplicationController
 
   def destroy
     @event_membership.destroy
-    Notification.build_notification!(@event_membership.memberable, @event_membership.event, "Your membership in event #{@event_membership.event.title} has been destroyed")
+    Notification.build_notification!(@event_membership.memberable, @event_membership.event, "You have been removed from #{@event_membership.event.title} by #{current_user.display_name}")
     head :no_content
   end
 

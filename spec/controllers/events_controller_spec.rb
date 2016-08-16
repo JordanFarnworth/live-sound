@@ -6,7 +6,6 @@ RSpec.describe EventsController, type: :controller do
   let!(:entity_user) {FactoryGirl.create(:entity_user, user: user, userable: band)}
 
   before :each do
-    Delayed::Worker.delay_jobs = false
     request.headers['Authorization'] = "Bearer #{controller.create_jwt_session({ user_id: user.id })}"
   end
 
@@ -47,7 +46,7 @@ RSpec.describe EventsController, type: :controller do
     end
 
     it 'should notifiy event_members of the update' do
-      expect(Notification.all.count).to eq 0
+      expect(Notification.all.count).to eq 1
       put :update, params: {id: event.id, event: {title: "#{event.title} test"}}
       event.send_notifications!("Event #{event.title} was updated to #{event.attributes}")
       expect(Notification.all.count).to eq 2
@@ -65,7 +64,7 @@ RSpec.describe EventsController, type: :controller do
     end
 
     it 'should notify members of the event of the deletion' do
-      expect(Notification.all.count).to eq 0
+      expect(Notification.all.count).to eq 1
       delete :destroy, params: {id: event.id}
       event.send_notifications!("Event #{event.title} was updated to #{event.attributes}")
       expect(Notification.all.count).to eq 2

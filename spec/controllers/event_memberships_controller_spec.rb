@@ -30,18 +30,17 @@ RSpec.describe EventMembershipsController, type: :controller do
     let!(:event_membership) {FactoryGirl.create(:event_membership, event: event, memberable: band)}
 
     it 'should create a notification for the users in the event when another user is added.' do
-      expect(Notification.all.count).to eq 0
-      post :create, params: {event_membership: {workflow_state: 'active', role: 'admin', event_id: event.id, memberable_type: "User", memberable_id: user.id}, event_id: event.id}
       expect(Notification.all.count).to eq 1
-      expect(Notification.all.map &:notifiable).to match_array [user]
+      post :create, params: {event_membership: {workflow_state: 'active_member', role: 'admin', event_id: event.id, memberable_type: "User", memberable_id: user.id}, event_id: event.id}
+      expect(Notification.all.count).to eq 2
+      expect(Notification.all.map &:notifiable).to match_array [band, user]
       expect(Notification.all.map(&:contextable).uniq).to eq [event]
     end
 
     it 'should create a notification for an invitation' do
-      expect(Notification.all.count).to eq 0
+      expect(Notification.all.count).to eq 1
       post :create, params: {event_membership: {workflow_state: 'invited', role: 'admin', event_id: event.id, memberable_type: "User", memberable_id: user.id}, event_id: event.id}
-      expect(Notification.all.first.action.include?("You have been invited to")).to eq true
-      expect(Notification.all.first.notifiable).to eq user
+      expect(Notification.all.first.notifiable).to eq band
     end
 
     it 'should create a new event_membership' do
@@ -173,10 +172,10 @@ RSpec.describe EventMembershipsController, type: :controller do
     end
 
     it 'should create a notification for an invitation' do
-      expect(Notification.all.count).to eq 0
+      expect(Notification.all.count).to eq 1
       post :create, params: {event_membership: {workflow_state: 'invitation', status: 'pending', role: 'admin', event_id: event.id, memberable_type: "User", memberable_id: user.id}, event_id: event.id}
       expect(Notification.all.count).to eq 1
-      expect(Notification.all.first.notifiable).to eq user
+      expect(Notification.all.first.notifiable).to eq band
     end
   end
 

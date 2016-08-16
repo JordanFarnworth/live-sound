@@ -23,7 +23,6 @@ class EventsController < ApplicationController
   def update
     if @event.update event_params
       render json: event_json(@event)
-      @event.delay.send_notifications!("Event #{@event.title} was updated to #{@event.attributes}")
     else
       render json: @event.errors, status: :bad_request
     end
@@ -31,7 +30,6 @@ class EventsController < ApplicationController
 
   def destroy
     @event.destroy
-    @event.delay.send_notifications!("Event #{@event.title} was destroyed by #{current_user.name}")
     head :no_content
   end
 
@@ -39,7 +37,6 @@ class EventsController < ApplicationController
     @event = Event.new event_params
     if @event.save
       @event.add_member @context, 'owner'
-      Notification.build_notification!(@context, @event, "Event #{@event.title} was created!")
       render json: event_json(@event)
     else
       render json: @event.errors, status: :bad_request
