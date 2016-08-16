@@ -52,7 +52,7 @@ class EventMembership < ApplicationRecord
     if workflow_state == 'invited'
       Notification.build_notification!(memberable, event, "You have been invited to #{event.title}, as (an) #{role}")
       event.delay.send_notifications!("#{memberable.name} was invited to #{event.title} as a(n) #{role}", event.event_memberships.where.not(id: self.id))
-    elsif workflow_state == 'active_member'
+    elsif workflow_state == 'active'
       Notification.build_notification!(memberable, event, "You have been added to #{event.title}, as (an) #{role}")
       event.delay.send_notifications!("#{memberable.name} was added to #{event.title} as a(n) #{role}", event.event_memberships.where.not(id: self.id).as_owner_or_admin)
     end

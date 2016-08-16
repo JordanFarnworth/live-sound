@@ -58,7 +58,6 @@ class EventMembershipsController < ApplicationController
 
     if params[:event_membership].blank? || @event_membership.update(update_event_membership_params)
       render json: event_membership_json(@event_membership, get_includes), status: :ok
-      Notification.build_notification!(@event_membership.memberable, @event_membership.event, "Your membership in event #{@event_membership.event.title} has been updated as status: #{@event_membership.event.status}, role: #{@event_membership.role}")
     else
       render json: @event_membership.errors, status: :bad_request
     end
@@ -66,7 +65,6 @@ class EventMembershipsController < ApplicationController
 
   def destroy
     @event_membership.destroy
-    Notification.build_notification!(@event_membership.memberable, @event_membership.event, "You have been removed from #{@event_membership.event.title} by #{current_user.display_name}")
     head :no_content
   end
 
