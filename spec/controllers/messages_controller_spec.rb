@@ -58,7 +58,7 @@ RSpec.describe MessagesController, type: :controller do
       post :create, params: { user_id: user.id, message: message_params }
       expect(response.status).to eql 200
       expect(thread.messages.count).to eql 2
-      expect(json_response['messages'].map { |m| m['id'] }).to eql thread.messages.pluck(:id)
+      expect(json_response['messages'].map { |m| m['id'] }).to match_array thread.messages.pluck(:id)
     end
 
     describe 'without an existing thread' do

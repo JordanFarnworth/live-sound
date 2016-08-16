@@ -7,3 +7,7 @@ def log_out(user = nil)
   controller.instance_variable_set(:@jwt_session, nil)
   request.headers['Authorization'] = nil
 end
+
+def log_in(user)
+  request.headers['Authorization'] = "Bearer #{controller.create_jwt_session({ user_id: user.id })}"
+end

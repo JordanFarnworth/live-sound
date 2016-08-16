@@ -37,8 +37,18 @@ class Ability
     # event members
     can :read, EventMembership, EventMembership.active
     can :show, EventMembership if user.persisted?
-    can :create, EventMembership if user.persisted?
+    can :create, EventMembership if user.persisted? && context.is_a?(Event) && Event.visible_to_user(user.id).where(id: context.id).exists?
     can :update, EventMembership
-    can :destroy, EventMembership
+    can :destroy, EventMembership do |membership|
+      user_roles = membership.event.event_memberships_for_user(user).distinct.pluck(:role)
+
+      if membership.role == 'owner'
+        false
+      elsif (%w(owner admin) & user_roles).present?
+        true
+      else
+        membership.memberable.entity_user_for_user(user)
+      end
+    end
   end
 end
