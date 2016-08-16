@@ -5,9 +5,11 @@ module EventContext
     append_before_action :determine_context
 
     def determine_context
-      if event = Event.accessible_by(current_ability).find_by(id: params[:event_id] || -1)
-        @context ||= event
-        @event = event
+      if params.key? :event_id
+        if event = Event.accessible_by(current_ability).find_by!(id: params[:event_id])
+          @context ||= event
+          @event = event
+        end
       end
     end
 

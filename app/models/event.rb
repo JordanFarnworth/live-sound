@@ -46,13 +46,13 @@ class Event < ApplicationRecord
     applications.flatten.uniq
   end
 
-  def add_member(member, role, workflow_state = 'active_member', status = 'accepted')
-    EventMembership.find_or_create_by!(memberable: member, event: self, role: role, workflow_state: workflow_state, status: status)
+  def add_member(member, role, workflow_state = 'active')
+    EventMembership.find_or_create_by!(memberable: member, event: self, role: role, workflow_state: workflow_state)
   end
 
-  def invite_member(invitee, role, workflow_state = 'invitation', status = 'pending')
+  def invite_member(invitee, role, workflow_state = 'invited')
     # TODO add hook to delete this when a invitee accepts/declines
-    EventMembership.find_or_create_by!(memberable: invitee, role: role, event: self, workflow_state: workflow_state, status: status)
+    EventMembership.find_or_create_by!(memberable: invitee, role: role, event: self, workflow_state: workflow_state)
   end
 
   def event_memberships_for_user(user)
@@ -62,6 +62,16 @@ class Event < ApplicationRecord
 
   def active?
     workflow_state == 'active'
+  end
+  alias_method :public?, :active?
+
+  def private?
+    !public?
+  end
+
+  def unpublish!
+    self.workflow_state = 'unpublished'
+    save!
   end
 
 end

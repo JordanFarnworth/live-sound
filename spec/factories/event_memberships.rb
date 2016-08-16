@@ -3,7 +3,6 @@ FactoryGirl.define do
     association :event, factory: :event
     association :memberable, factory: :band
     role 'performer'
-    workflow_state 'active_member'
-    status 'accepted'
+    workflow_state 'active'
   end
 end

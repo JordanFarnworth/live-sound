@@ -12,8 +12,29 @@ class EventMembershipsController < ApplicationController
   end
 
   def create
+    membership_roles = @event.event_memberships_for_user(current_user).distinct.pluck(:role)
+
+    return raise CanCan::AccessDenied if @event.private? && (%w(owner admin) & membership_roles).empty?
+    entity = instantiated_object create_event_membership_params[:memberable_type], create_event_membership_params[:memberable_id]
+
+    if entity.entity_user_for_user(current_user)
+      # Why would an entity want to invite themselves to an event, but keep their membership state as just invited? :shifty-eyes:
+      params[:event_membership][:workflow_state] = 'active'
+    else
+      # unless the current user is a member of the entity for which they're creating a membership,
+      # the membership can only be created as invited
+      params[:event_membership][:workflow_state] = 'invited'
+    end
+
+    # unless the current user is an owner or admin of the event, they can only invite
+    # other entities with a role of attendee
+    params[:event_membership][:role] = 'attendee' if (%w(owner admin) & membership_roles).empty?
+
+    # only 1 owner can be set for an event, which is done during event creation
+    params[:event_membership][:role] = 'admin' if create_event_membership_params[:role] == 'owner'
+
     @event_membership = @event.event_memberships.new create_event_membership_params
-    @event_membership.event = @event
+    @event_membership.memberable = entity
     if @event_membership.save
       render json: event_membership_json(@event_membership, get_includes), status: :ok
     else
@@ -22,7 +43,20 @@ class EventMembershipsController < ApplicationController
   end
 
   def update
-    if @event_membership.update update_event_membership_params
+    membership_roles = @event.event_memberships_for_user(current_user).distinct.pluck(:role)
+
+    if params[:event_membership][:workflow_state] == 'active' && @event_membership.invited? &&
+        !@event_membership.memberable.entity_user_for_user(current_user)
+
+      # don't allow invitations to be accepted if the current user is not a member of the entity to which the membership belongs
+      params[:event_membership].delete :workflow_state
+    end
+
+    if (%w(owner admin) & membership_roles).empty? || params[:event_membership][:role] == 'owner'
+      params[:event_membership].delete :role
+    end
+
+    if params[:event_membership].blank? || @event_membership.update(update_event_membership_params)
       render json: event_membership_json(@event_membership, get_includes), status: :ok
     else
       render json: @event_membership.errors, status: :bad_request
@@ -41,11 +75,11 @@ class EventMembershipsController < ApplicationController
   end
 
   def create_event_membership_params
-    params.require(:event_membership).permit(:role, :workflow_state, :status, :memberable_type, :memberable_id, :event_id)
+    params.require(:event_membership).permit(:role, :workflow_state, :memberable_type, :memberable_id, :event_id)
   end
 
   def update_event_membership_params
-    params.require(:event_membership).permit(:role, :workflow_state, :status)
+    params.require(:event_membership).permit(:role, :workflow_state)
   end
 
 end
