@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160806180414) do
+ActiveRecord::Schema.define(version: 20160816024948) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -33,6 +33,24 @@ ActiveRecord::Schema.define(version: 20160806180414) do
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
     t.string   "workflow_state"
+    t.index ["braintree_customer_id"], name: "index_bands_on_braintree_customer_id", using: :btree
+    t.index ["deleted_at"], name: "index_bands_on_deleted_at", using: :btree
+    t.index ["name"], name: "index_bands_on_name", using: :btree
+  end
+
+  create_table "delayed_jobs", force: :cascade do |t|
+    t.integer  "priority",   default: 0, null: false
+    t.integer  "attempts",   default: 0, null: false
+    t.text     "handler",                null: false
+    t.text     "last_error"
+    t.datetime "run_at"
+    t.datetime "locked_at"
+    t.datetime "failed_at"
+    t.string   "locked_by"
+    t.string   "queue"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
   end
 
   create_table "enterprises", force: :cascade do |t|
@@ -52,6 +70,9 @@ ActiveRecord::Schema.define(version: 20160806180414) do
     t.text     "settings"
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
+    t.index ["braintree_customer_id"], name: "index_enterprises_on_braintree_customer_id", using: :btree
+    t.index ["deleted_at"], name: "index_enterprises_on_deleted_at", using: :btree
+    t.index ["name"], name: "index_enterprises_on_name", using: :btree
   end
 
   create_table "entity_users", force: :cascade do |t|
@@ -77,32 +98,17 @@ ActiveRecord::Schema.define(version: 20160806180414) do
     t.index ["event_id"], name: "index_event_applications_on_event_id", using: :btree
   end
 
-  create_table "event_invitations", force: :cascade do |t|
+  create_table "event_memberships", force: :cascade do |t|
     t.integer  "event_id"
-    t.string   "workflow_state"
-    t.string   "invitable_type"
-    t.integer  "invitable_id"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
-    t.string   "invitation_type"
-    t.datetime "deleted_at"
-    t.index ["deleted_at"], name: "index_event_invitations_on_deleted_at", using: :btree
-    t.index ["event_id"], name: "index_event_invitations_on_event_id", using: :btree
-    t.index ["invitable_type", "invitable_id"], name: "index_event_invitations_on_invitable_type_and_invitable_id", using: :btree
-  end
-
-  create_table "event_members", force: :cascade do |t|
-    t.integer  "event_id"
-    t.string   "member_type"
     t.string   "workflow_state"
     t.string   "memberable_type"
     t.integer  "memberable_id"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
     t.datetime "deleted_at"
-    t.index ["deleted_at"], name: "index_event_members_on_deleted_at", using: :btree
-    t.index ["event_id"], name: "index_event_members_on_event_id", using: :btree
-    t.index ["memberable_type", "memberable_id"], name: "index_event_members_on_memberable_type_and_memberable_id", using: :btree
+    t.string   "role"
+    t.index ["deleted_at"], name: "index_event_memberships_on_deleted_at", using: :btree
+    t.index ["event_id"], name: "index_event_memberships_on_event_id", using: :btree
   end
 
   create_table "events", force: :cascade do |t|
@@ -129,6 +135,7 @@ ActiveRecord::Schema.define(version: 20160806180414) do
     t.integer  "favoriterable_id"
     t.string   "favoritable_type"
     t.integer  "favoritable_id"
+    t.string   "workflow_state"
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
     t.index ["favoritable_type", "favoritable_id"], name: "index_favorites_on_favoritable_type_and_favoritable_id", using: :btree
@@ -144,6 +151,53 @@ ActiveRecord::Schema.define(version: 20160806180414) do
     t.index ["user_id"], name: "index_jwt_sessions_on_user_id", using: :btree
   end
 
+  create_table "message_participants", force: :cascade do |t|
+    t.integer  "message_id"
+    t.integer  "entity_id"
+    t.string   "entity_type"
+    t.string   "workflow_state"
+    t.datetime "deleted_at"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+    t.index ["deleted_at"], name: "index_message_participants_on_deleted_at", using: :btree
+    t.index ["entity_id", "entity_type"], name: "index_message_participants_on_entity_id_and_entity_type", using: :btree
+    t.index ["message_id"], name: "index_message_participants_on_message_id", using: :btree
+  end
+
+  create_table "message_thread_participants", force: :cascade do |t|
+    t.integer  "message_thread_id"
+    t.integer  "entity_id"
+    t.string   "entity_type"
+    t.string   "workflow_state"
+    t.datetime "deleted_at"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+    t.index ["deleted_at"], name: "index_message_thread_participants_on_deleted_at", using: :btree
+    t.index ["entity_id", "entity_type"], name: "index_message_thread_participants_on_entity_id_and_entity_type", using: :btree
+    t.index ["message_thread_id"], name: "index_message_thread_participants_on_message_thread_id", using: :btree
+  end
+
+  create_table "message_threads", force: :cascade do |t|
+    t.string   "subject"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_message_threads_on_deleted_at", using: :btree
+  end
+
+  create_table "messages", force: :cascade do |t|
+    t.integer  "message_thread_id"
+    t.text     "body"
+    t.integer  "author_id"
+    t.string   "author_type"
+    t.datetime "deleted_at"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+    t.index ["author_id", "author_type"], name: "index_messages_on_author_id_and_author_type", using: :btree
+    t.index ["deleted_at"], name: "index_messages_on_deleted_at", using: :btree
+    t.index ["message_thread_id"], name: "index_messages_on_message_thread_id", using: :btree
+  end
+
   create_table "notifications", force: :cascade do |t|
     t.string   "notifiable_type"
     t.integer  "notifiable_id"
@@ -154,8 +208,10 @@ ActiveRecord::Schema.define(version: 20160806180414) do
     t.datetime "deleted_at"
     t.datetime "created_at",       null: false
     t.datetime "updated_at",       null: false
-    t.index ["contextable_type", "contextable_id"], name: "index_notifications_on_contextable_type_and_contextable_id", using: :btree
-    t.index ["notifiable_type", "notifiable_id"], name: "index_notifications_on_notifiable_type_and_notifiable_id", using: :btree
+    t.text     "action"
+    t.index ["contextable_id", "contextable_type"], name: "index_notifications_on_contextable_id_and_contextable_type", using: :btree
+    t.index ["deleted_at"], name: "index_notifications_on_deleted_at", using: :btree
+    t.index ["notifiable_id", "notifiable_type"], name: "index_notifications_on_notifiable_id_and_notifiable_type", using: :btree
   end
 
   create_table "private_parties", force: :cascade do |t|
@@ -175,6 +231,9 @@ ActiveRecord::Schema.define(version: 20160806180414) do
     t.string   "workflow_state"
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
+    t.index ["braintree_customer_id"], name: "index_private_parties_on_braintree_customer_id", using: :btree
+    t.index ["deleted_at"], name: "index_private_parties_on_deleted_at", using: :btree
+    t.index ["name"], name: "index_private_parties_on_name", using: :btree
   end
 
   create_table "reviews", force: :cascade do |t|
@@ -187,8 +246,8 @@ ActiveRecord::Schema.define(version: 20160806180414) do
     t.string   "workflow_state"
     t.datetime "created_at",        null: false
     t.datetime "updated_at",        null: false
-    t.index ["reviewable_type", "reviewable_id"], name: "index_reviews_on_reviewable_type_and_reviewable_id", using: :btree
-    t.index ["reviewerable_type", "reviewerable_id"], name: "index_reviews_on_reviewerable_type_and_reviewerable_id", using: :btree
+    t.index ["reviewable_id", "reviewable_type"], name: "index_reviews_on_reviewable_id_and_reviewable_type", using: :btree
+    t.index ["reviewerable_id", "reviewerable_type"], name: "index_reviews_on_reviewerable_id_and_reviewerable_type", using: :btree
   end
 
   create_table "users", force: :cascade do |t|
@@ -211,11 +270,17 @@ ActiveRecord::Schema.define(version: 20160806180414) do
     t.float    "latitude"
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
+    t.index ["deleted_at"], name: "index_users_on_deleted_at", using: :btree
+    t.index ["email"], name: "index_users_on_email", using: :btree
+    t.index ["uid"], name: "index_users_on_uid", using: :btree
+    t.index ["username"], name: "index_users_on_username", using: :btree
   end
 
   add_foreign_key "entity_users", "users"
   add_foreign_key "event_applications", "events"
-  add_foreign_key "event_invitations", "events"
-  add_foreign_key "event_members", "events"
+  add_foreign_key "event_memberships", "events"
   add_foreign_key "jwt_sessions", "users"
+  add_foreign_key "message_participants", "messages"
+  add_foreign_key "message_thread_participants", "message_threads"
+  add_foreign_key "messages", "message_threads"
 end

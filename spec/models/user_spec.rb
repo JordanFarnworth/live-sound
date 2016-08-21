@@ -1,5 +1,6 @@
 require 'rails_helper'
 
+<<<<<<< HEAD
 describe User, type: :model do
   it 'should have a valid factory' do
     expect(FactoryGirl.build(:user)).to be_valid
@@ -30,6 +31,14 @@ describe User, type: :model do
       user = FactoryGirl.build(:user)
       response = user.email_blank?
       expect(response).to be false
+    end
+  end
+
+  describe 'class methods' do
+    let!(:user) {FactoryGirl.create(:user, display_name: "test name")}
+
+    it 'should return the users display name' do
+      expect(user.name).to eq user.display_name
     end
   end
 end

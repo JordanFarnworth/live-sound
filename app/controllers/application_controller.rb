@@ -11,8 +11,12 @@ class ApplicationController < ActionController::Base
     render json: { message: 'resource not found' }, status: :not_found
   end
 
+  rescue_from JWT::DecodeError do
+    render json: { message: 'invalid session token' }, status: :bad_request
+  end
+
   def get_includes
-    @includes ||= (params[:includes] || [])
+    @includes ||= (params[:include] || [])
   end
 
   def current_user
@@ -25,6 +29,15 @@ class ApplicationController < ActionController::Base
 
   def current_ability
     @current_ability ||= Ability.new(current_user)
+  end
+
+  def instantiated_object(type, id)
+    return nil unless type.is_a?(String)
+
+    type.classify.constantize.find(id.to_i)
+  rescue NameError => e
+    Rails.logger.warn(e.message)
+    nil
   end
 
 end

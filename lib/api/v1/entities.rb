@@ -1,5 +1,9 @@
 module Api::V1::Entities
-
+  include Api::V1::User
+  include Api::V1::Enterprise
+  include Api::V1::PrivateParty
+  include Api::V1::Band
+  
   def entity_json(entity, includes = [])
     case entity.class.to_s
     when "User"

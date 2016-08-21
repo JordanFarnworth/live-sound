@@ -30,6 +30,7 @@ gem 'puma', '~> 3.0'
 gem 'aws-sdk', '< 2.0'
 gem "sentry-raven"
 gem 'omniauth'
+gem 'rails-controller-testing'
 gem 'omniauth-facebook', '1.4.0'
 gem 'redis', '~> 3.0'
 gem 'responders'

@@ -3,11 +3,11 @@ class EventsController < ApplicationController
   include Api::V1::Event
 
   before_action :load_event, only: [:show, :update, :destroy]
-  authorize_resource except: [:index]
+  authorize_resource except: [:index, :show]
 
   def index
     @events = if @context
-      Event.joins(:event_members).where(event_members: { id: @context.event_memberships_as_owner_or_performer })
+      Event.joins(:event_memberships).where(event_memberships: { id: @context.event_memberships_as_owner_or_performer })
     else
       Event.all
     end
@@ -49,6 +49,6 @@ class EventsController < ApplicationController
 
   private
   def event_params
-    params.require(:event).permit(:start_time, :end_time, :recurrence_pattern, :recurrence_ends_at, :status, :state, :price, :title, :description, :address, :latitude, :longitude)
+    params.require(:event).permit(:start_time, :end_time, :recurrence_pattern, :recurrence_ends_at, :status, :workflow_state, :price, :title, :description, :address, :latitude, :longitude)
   end
 end
