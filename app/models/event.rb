@@ -4,6 +4,7 @@ class Event < ApplicationRecord
   has_many :private_parties, through: :event_memberships, source: :memberable, source_type: "PrivateParty"
   has_many :users, through: :event_memberships, source: :memberable, source_type: "User"
   has_many :event_memberships
+  has_many :event_applications
   has_many :notifications, as: :contextable
 
   acts_as_paranoid

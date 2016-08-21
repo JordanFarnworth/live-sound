@@ -36,6 +36,21 @@ class Ability
       favorite.favoriterable.entity_user_for_user(user)
     end
 
+    # event applications
+    can :show, EventApplication if user.persisted?
+    can :create, EventApplication if user.persisted? && context.is_a?(Event) && Event.visible_to_user(user.id).where(id: context.id).exists?
+    can :update, EventApplication
+    can :destroy, EventApplication do |application|
+      user_roles = application.event.event_memberships_for_user(user).distinct.pluck(:role)
+      if !user_roles.include? "owner"
+        false
+      elsif (%w(owner admin) & user_roles).present?
+        true
+      else
+        membership.memberable.entity_user_for_user(user)
+      end
+    end
+
     # event members
     can :read, EventMembership, EventMembership.active
     can :show, EventMembership if user.persisted?
