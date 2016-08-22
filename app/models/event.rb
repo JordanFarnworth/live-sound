@@ -86,8 +86,6 @@ class Event < ApplicationRecord
 
   def active?
     workflow_state == 'active'
-<<<<<<< HEAD
-=======
   end
   alias_method :public?, :active?
 
@@ -98,7 +96,6 @@ class Event < ApplicationRecord
   def unpublish!
     self.workflow_state = 'unpublished'
     save!
->>>>>>> 9af0b7ed84a408b815fa056b42092630b3af2f04
   end
 
 end
