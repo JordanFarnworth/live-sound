@@ -5,10 +5,21 @@ describe Favorite, type: :model do
     expect(FactoryGirl.build(:favorite)).to be_valid
   end
 
-  let(:favorite) { FactoryGirl.build(:favorite) }
+  describe 'associations should be valid' do
+    it { should belong_to(:favoritable)}
+    it { should belong_to(:favoriterable)}
+  end
 
-  it { should belong_to(:favoritable) }
-  it { should belong_to(:favoriterable) }
+  describe 'validations should be valid' do
+    it { should validate_presence_of(:favoriterable_type) }
+    it { should validate_inclusion_of(:favoriterable_type).in_array(Entityable::ENTITYABLE_CLASSES) }
+    it { should validate_presence_of(:favoriterable_id) }
+    it { should validate_presence_of(:favoritable_type) }
+    it { should validate_inclusion_of(:favoritable_type).in_array(Entityable::ENTITYABLE_CLASSES) }
+    it { should validate_presence_of(:favoritable_id) }
+  end
+
+  let(:favorite) { FactoryGirl.build(:favorite) }
 
   it 'builds a favorite' do
     built_favorite = Favorite.build_favorite create(:band), create(:user)
