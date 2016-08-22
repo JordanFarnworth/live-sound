@@ -11,7 +11,10 @@ describe Notification, type: :model do
     it { should validate_inclusion_of(:notifiable_type).in_array(Entityable::ENTITYABLE_CLASSES) }
     it { should validate_presence_of(:contextable_id) }
     it { should validate_presence_of(:contextable_type) }
-    it { should validate_inclusion_of(:contextable_type).in_array(%w[Event EventInvitation EventApplication Favorite Review EventMember]) }
+    it 'should validate inclusion of contextable type' do
+      FactoryGirl.create(:notification)
+      should validate_inclusion_of(:contextable_type).in_array(%w[Event EventApplication Favorite Review EventMembership])
+    end
     it { should validate_presence_of(:workflow_state) }
   end
 

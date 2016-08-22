@@ -6,12 +6,17 @@ describe PrivateParty, type: :model do
   end
 
   describe 'should have valid validations' do
-    it { should have_many(:events).through(:event_members) }
-    it { should have_many(:event_members) }
+    it { should have_many(:events).through(:event_memberships) }
+    it { should have_many(:event_memberships) }
   end
 
   describe 'should act as paranoid' do
     it { should have_db_column(:deleted_at) }
+  end
+
+  describe 'should have valid associations' do
+    it { should have_many(:events).through(:event_memberships) }
+    it { should have_many(:event_memberships) }
   end
 
   describe 'should serialize attributes' do

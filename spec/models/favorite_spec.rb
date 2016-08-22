@@ -13,24 +13,21 @@ describe Favorite, type: :model do
   describe 'validations should be valid' do
     it { should validate_presence_of(:favoriterable_type) }
     it { should validate_inclusion_of(:favoriterable_type).in_array(Entityable::ENTITYABLE_CLASSES) }
-    it { should validate_uniqueness_of(:favoriterable_type).scoped_to([:favoriterable_id, :favoritable_type, :favoritable_id]) }
     it { should validate_presence_of(:favoriterable_id) }
     it { should validate_presence_of(:favoritable_type) }
     it { should validate_inclusion_of(:favoritable_type).in_array(Entityable::ENTITYABLE_CLASSES) }
     it { should validate_presence_of(:favoritable_id) }
   end
 
-  describe 'methods should be valid' do
-    let(:favorite) { FactoryGirl.build(:favorite) }
+  let(:favorite) { FactoryGirl.build(:favorite) }
 
-    it 'builds a favorite' do
-      built_favorite = Favorite.build_favorite create(:band), create(:user)
-      expect(built_favorite).to be_valid
-    end
+  it 'builds a favorite' do
+    built_favorite = Favorite.build_favorite create(:band), create(:user)
+    expect(built_favorite).to be_valid
+  end
 
-    it 'retrieves an existing favorite between entities if exists' do
-      built_favorite = Favorite.build_favorite favorite.favoritable, favorite.favoriterable
-      expect(built_favorite.id).to eql favorite.id
-    end
+  it 'retrieves an existing favorite between entities if exists' do
+    built_favorite = Favorite.build_favorite favorite.favoritable, favorite.favoriterable
+    expect(built_favorite.id).to eql favorite.id
   end
 end
