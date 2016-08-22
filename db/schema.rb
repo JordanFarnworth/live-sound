@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160816024948) do
+ActiveRecord::Schema.define(version: 20160816231254) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -109,6 +109,7 @@ ActiveRecord::Schema.define(version: 20160816024948) do
     t.string   "role"
     t.index ["deleted_at"], name: "index_event_memberships_on_deleted_at", using: :btree
     t.index ["event_id"], name: "index_event_memberships_on_event_id", using: :btree
+    t.index ["memberable_id", "memberable_type", "role"], name: "index_event_members_on_memberable_id_type_role", unique: true, using: :btree
   end
 
   create_table "events", force: :cascade do |t|
@@ -135,7 +136,6 @@ ActiveRecord::Schema.define(version: 20160816024948) do
     t.integer  "favoriterable_id"
     t.string   "favoritable_type"
     t.integer  "favoritable_id"
-    t.string   "workflow_state"
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
     t.index ["favoritable_type", "favoritable_id"], name: "index_favorites_on_favoritable_type_and_favoritable_id", using: :btree
@@ -270,6 +270,7 @@ ActiveRecord::Schema.define(version: 20160816024948) do
     t.float    "latitude"
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
+    t.string   "role"
     t.index ["deleted_at"], name: "index_users_on_deleted_at", using: :btree
     t.index ["email"], name: "index_users_on_email", using: :btree
     t.index ["uid"], name: "index_users_on_uid", using: :btree
