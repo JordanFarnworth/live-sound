@@ -4,6 +4,8 @@ class Ability
   def initialize(user, context = nil)
     user ||= User.new(id: -1)
 
+    can :manage, :all if user.admin?
+
     can :read, Band, Band.active.or(Band.with_user_as_member(user.id))
     can :read, PrivateParty, PrivateParty.active.or(PrivateParty.with_user_as_member(user.id))
     can :read, Enterprise, Enterprise.active.or(Enterprise.with_user_as_member(user.id))
@@ -11,7 +13,7 @@ class Ability
 
     # events
     can :read, Event, Event.visible_to_user(user.id)
-    
+
     can [:update, :destroy], Event do |event|
       event.event_memberships_for_user(user).as_owner.exists?
     end
