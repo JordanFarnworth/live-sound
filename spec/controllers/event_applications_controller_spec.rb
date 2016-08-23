@@ -35,7 +35,7 @@ RSpec.describe EventApplicationsController, type: :controller do
       expect(response.code).to eq "200"
       expect(json_response["id"]).to eq EventApplication.last.id
       expect(json_response["event_id"]).to eq event.id
-      expect(Notification.all.length).to eq 2
+      expect(Notification.all.length).to eq 1
     end
   end
 
@@ -57,7 +57,8 @@ RSpec.describe EventApplicationsController, type: :controller do
       delete :destroy, params: {id: event_application.id, event_id: event.id}
       expect(assigns(:context)).to eql event
       expect(response.code).to eq "204"
-      expect(Notification.all.length).to eq 1
+      # should only send notification if event_application is delete via event_appliction being declined
+      expect(Notification.all.length).to eq 0
     end
   end
 

@@ -3,7 +3,7 @@ class EventMembership < ApplicationRecord
   belongs_to :memberable, polymorphic: true
 
   WORKFLOW_STATES = %w(invited active pending declined)
-  EVENT_ROLES = %w(owner admin performer attendee)
+  EVENT_ROLES = %w(owner admin performer attendee volunteer)
 
   acts_as_paranoid
 
