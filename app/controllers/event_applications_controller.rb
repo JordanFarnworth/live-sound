@@ -45,11 +45,11 @@ class EventApplicationsController < ApplicationController
   end
 
   def event_application_params
-    params.require(:event_application).permit(:event_id, :workflow_state, :applicable_type, :application_type, :applicable_id, :created_at, :updated_at)
+    params.require(:event_application).permit(:event_id, :workflow_state, :applicable_type, :application_type, :applicable_id)
   end
 
   def update_application_params
-    params.permit(:id, :event_id, :workflow_state, :applicable_type, :application_type, :applicable_id, :created_at, :updated_at)
+    params.require(:event_application).permit(:event_id, :workflow_state, :applicable_type, :application_type, :applicable_id)
   end
 
 end

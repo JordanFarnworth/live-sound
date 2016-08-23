@@ -11,12 +11,12 @@ describe EventApplication, type: :model do
       FactoryGirl.create(:event_application)
       should validate_uniqueness_of(:event_id).scoped_to(:applicable_id, :applicable_type)
     end
-    
+
     it { should validate_presence_of(:applicable_id) }
     it { should validate_presence_of(:applicable_type) }
     it { should validate_inclusion_of(:applicable_type).in_array(%w[Band User]) }
     it { should validate_presence_of(:application_type) }
-    it { should validate_inclusion_of(:application_type).in_array(%w[as_performer]) }
+    it { should validate_inclusion_of(:application_type).in_array(EventApplication::APPLICATION_TYPES) }
     it 'should validate inclusion of workflow state' do
       FactoryGirl.build(:event_application)
       should validate_inclusion_of(:workflow_state).in_array(%w[pending accepted declined])

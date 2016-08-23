@@ -19,7 +19,6 @@ class EventApplication < ApplicationRecord
 
   def infer_values
     self.workflow_state ||= 'pending'
-    self.application_type ||= applicable.try(:class_name)
   end
 
   def send_create_notifications
