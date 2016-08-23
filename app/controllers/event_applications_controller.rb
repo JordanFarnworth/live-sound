@@ -1,12 +1,14 @@
 class EventApplicationsController < ApplicationController
   include Api::V1::EventApplication
   include EntityContext
+  include EventContext
 
   before_action :find_event_application, only: [:show, :update, :destroy]
   # TODO need to filter some of these actions (update, delete. create) via event_roles (owner, admin)
+  authorize_resource except: [:index]
 
   def index
-    @event_applications = EventApplication.includes(:event).where(applicable: @context)
+    @event_applications = @context.event_applications
     render json: paginated_json(@event_applications) { |event_applications| event_applications_json(event_applications) }
   end
 
@@ -24,7 +26,7 @@ class EventApplicationsController < ApplicationController
   end
 
   def update
-    if @event_application.update event_application_params
+    if @event_application.update update_application_params
       render json: event_application_json(@event_application, get_includes), status: :ok
     else
       render json: {error: @event_application.errors.full_messages.to_s}, status: :bad_request
@@ -43,7 +45,11 @@ class EventApplicationsController < ApplicationController
   end
 
   def event_application_params
-    params.require(:event_application).permit(:id, :event_id, :workflow_state, :applicable_type, :applicable_id, :created_at, :updated_at)
+    params.require(:event_application).permit(:event_id, :workflow_state, :applicable_type, :application_type, :applicable_id)
+  end
+
+  def update_application_params
+    params.require(:event_application).permit(:event_id, :workflow_state, :applicable_type, :application_type, :applicable_id)
   end
 
 end

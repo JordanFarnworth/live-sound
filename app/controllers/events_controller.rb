@@ -1,3 +1,4 @@
+
 class EventsController < ApplicationController
   include EntityContext
   include Api::V1::Event

@@ -3,6 +3,6 @@ FactoryGirl.define do
     association :event, factory: :event
     association :applicable, factory: :band
     workflow_state 'pending'
-    application_type 'as_performer'
+    application_type 'performer'
   end
 end
