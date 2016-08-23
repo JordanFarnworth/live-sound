@@ -14,7 +14,6 @@ class EventApplication < ApplicationRecord
 
   after_create :send_create_notifications
   after_update :send_update_notifications
-  before_destroy :send_destroy_notifications
   before_validation :infer_values
 
   def infer_values
@@ -29,8 +28,16 @@ class EventApplication < ApplicationRecord
     self.delay.send_notifications!("Application #{id} for event #{event.title} has been updated.")
   end
 
-  def send_destroy_notifications
-    self.delay.send_notifications!("Application #{id} for event #{event.title} has been deleted.")
+  def decline!
+    self.workflow_state = 'declined'
+    save
+    self.delay.send_notifications!("Your application for #{event.title} as an #{application_type} has been declined!", [applicable])
+  end
+
+  def accept!
+    EventMembership.create!(event_id: event.id, workflow_state: 'active', memberable: applicable, role: application_type)
+    self.delay.send_notifications!("Your application for #{event.title} as an #{application_type} has been accepted!", [applicable])
+    self.destroy
   end
 
   def send_notifications!(action, members = event.event_memberships.as_owner_or_admin.map(&:memberable))
@@ -38,6 +45,5 @@ class EventApplication < ApplicationRecord
       Notification.build_notification!(member, event, action)
     end
   end
-
 
 end

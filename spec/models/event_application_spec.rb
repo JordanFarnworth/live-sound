@@ -58,6 +58,50 @@ describe EventApplication, type: :model do
         expect(Notification.all.map(&:notifiable).include?(performer)).to eq false
       end
     end
+
+    describe '#accept!' do
+      let!(:event) { FactoryGirl.create(:event) }
+      let!(:event_application){ FactoryGirl.create(:event_application, event: event) }
+
+      EventMembership.destroy_all
+      EventApplication.destroy_all
+      Notification.destroy_all
+
+      it 'should create an event membership' do
+        expect(EventMembership.all.count).to eq 0
+        event_application.accept!
+        expect(EventMembership.all.count).to eq 1
+      end
+
+      it 'should send a notification to the applicant' do
+        expect(Notification.all.count).to eq 0
+        event_application.accept!
+        expect(Notification.all.count).to eq 2
+      end
+
+      it 'should be deleted after event membership is completed' do
+        expect(EventApplication.all.count).to eq 1
+        event_application.accept!
+        expect(EventApplication.all.count).to eq 0
+      end
+    end
+
+    describe '#decline!' do
+      let!(:event) { FactoryGirl.create(:event) }
+      let!(:event_application){ FactoryGirl.create(:event_application, event: event) }
+
+      it 'should have a workflow state of declined' do
+        expect(event_application.workflow_state).to eq 'pending'
+        event_application.decline!
+        expect(event_application.workflow_state).to eq 'declined'
+      end
+
+      it 'should send out a notification' do
+        expect(Notification.all.count).to eq 0
+        event_application.decline!
+        expect(Notification.all.count).to eq 1
+      end
+    end
     # end class methods
   end
 
