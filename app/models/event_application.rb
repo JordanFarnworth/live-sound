@@ -30,7 +30,7 @@ class EventApplication < ApplicationRecord
 
   def decline!
     self.workflow_state = 'declined'
-    save
+    save!
     self.delay.send_notifications!("Your application for #{event.title} as an #{application_type} has been declined!", [applicable])
   end
 
