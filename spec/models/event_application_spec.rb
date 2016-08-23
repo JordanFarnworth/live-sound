@@ -39,37 +39,22 @@ describe EventApplication, type: :model do
     end
 
     describe '#send_notifications!' do
-      let!(:event) { FactoryGirl.build(:event) }
-      let!(:band) {FactoryGirl.build(:band)}
-      let!(:user) {FactoryGirl.build(:user)}
-      let!(:user_one) {FactoryGirl.build(:user)}
-      let!(:owner) {FactoryGirl.build(:event_membership, role: 'owner', memberable_id: band.id, memberable_type: band.class_type, event: event)}
-      let!(:admin) {FactoryGirl.build(:event_membership, role: 'admin', memberable_id: user.id, memberable_type: user.class_type, event: event)}
-      let!(:performer) {FactoryGirl.build(:event_membership, role: 'performer', memberable: band, event: event)}
-      let!(:event_application){ FactoryGirl.build(:event_application, event: event) }
-
-      before :each do
-        event.save && band.save && user.save
-        owner.event_id = event.id
-        owner.memberable = band
-        owner.save
-        admin.event_id = event.id
-        admin.memberable = user
-        admin.save
-        performer.event_id = event.id
-        performer.memberable = user_one
-        admin.save
-        event_application.event = event
-        event_application.save
-      end
+      let!(:event) { FactoryGirl.create(:event) }
+      let!(:band) {FactoryGirl.create(:band)}
+      let!(:user) {FactoryGirl.create(:user)}
+      let!(:user_one) {FactoryGirl.create(:user)}
+      let!(:owner) {FactoryGirl.create(:event_membership, role: 'owner', memberable_id: band.id, memberable_type: band.class_type, event: event)}
+      let!(:admin) {FactoryGirl.create(:event_membership, role: 'admin', memberable_id: user.id, memberable_type: user.class_type, event: event)}
+      let!(:performer) {FactoryGirl.create(:event_membership, role: 'performer', memberable: band, event: event)}
+      let!(:event_application){ FactoryGirl.create(:event_application, event: event) }
 
       it 'should send notifications to the admins and owners' do
-        expect(Notification.all.count).to eq 4
+        expect(Notification.all.count).to eq 5
         expect(Notification.all.map(&:notifiable).uniq).to match_array [band, user]
       end
 
       it 'should not notify users that arent admins' do
-        expect(Notification.all.count).to eq 4
+        expect(Notification.all.count).to eq 5
         expect(Notification.all.map(&:notifiable).include?(performer)).to eq false
       end
     end
