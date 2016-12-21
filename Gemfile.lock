@@ -26,14 +26,6 @@ GIT
       railties (>= 3.2)
       tilt
 
-GIT
-  remote: https://github.com/tomykaira/clockwork.git
-  revision: f4da7d2552af8909481288fef2e04818d3ff01e9
-  specs:
-    clockwork (2.0.0)
-      activesupport
-      tzinfo
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -374,7 +366,6 @@ DEPENDENCIES
   byebug
   cancancan!
   capybara
-  clockwork!
   coffee-rails (~> 4.2.1)
   daemons
   database_cleaner
@@ -420,4 +411,4 @@ DEPENDENCIES
   will_paginate-bootstrap
 
 BUNDLED WITH
-   1.11.2
+   1.13.6
