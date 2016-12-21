@@ -15,7 +15,5 @@ dependencies:
       fi
     - rvm --default use 2.3.3
     - bundle check --path=vendor/bundle || bundle install --path=vendor/bundle --jobs=4 --retry=3
-
-cache_directories:
-  - ~/.yarn-cache
-  - ~/rvm_binaries
+  cache_directories:
+    - ~/rvm_binaries
