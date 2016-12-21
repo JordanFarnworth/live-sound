@@ -16,7 +16,6 @@ gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'bcrypt', '~> 3.1.7'
 gem 'geokit-rails'
-gem 'clockwork', git: 'https://github.com/tomykaira/clockwork.git'
 gem 'cancancan', github: 'CanCanCommunity/cancancan', ref: 'c58398c352ed88ac5036e583b91f67472f5d4abf'
 gem 'bootstrap_form'
 gem 'daemons'
